@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSafe - Machine Learning Model Performance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>AquaSafe</h4>
+                    <span>Risk Intelligence</span>
+                </div>
+            </a>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Analytics & Monitoring</li>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
+                <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+
+                <li class="menu-category">Surveillance Data</li>
+                <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
+                <li><a href="model.html" class="active"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+
+                <li class="menu-category">System</li>
+                <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h3>Model Performance & Evaluation</h3>
+                    <p>Authentic 10-Fold Cross-Validation Metrics (Weka Random Forest)</p>
+                </div>
+                <div class="nav-indicators">
+                    <button class="btn btn-sm btn-primary" id="btnRetrainModel">
+                        <span class="spinner-border spinner-border-sm me-1 d-none" id="retrainSpinner"></span>
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> Retrain Random Forest
+                    </button>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <!-- Metrics KPI Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="dashboard-card kpi-card kpi-primary h-100 mb-0">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Accuracy</span>
+                                <div class="kpi-icon bg-primary-subtle text-primary">
+                                    <i class="fa-solid fa-bullseye"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value text-primary" id="metricAccuracy">--%</div>
+                            <div class="kpi-subtitle">10-Fold Cross-Validation</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="dashboard-card kpi-card kpi-teal h-100 mb-0">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Precision</span>
+                                <div class="kpi-icon bg-info-subtle text-info">
+                                    <i class="fa-solid fa-filter"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value text-info" id="metricPrecision">--%</div>
+                            <div class="kpi-subtitle">Weighted average precision</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="dashboard-card kpi-card kpi-low h-100 mb-0">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Recall</span>
+                                <div class="kpi-icon bg-success-subtle text-success">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value text-success" id="metricRecall">--%</div>
+                            <div class="kpi-subtitle">Weighted sensitivity</div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="dashboard-card kpi-card kpi-med h-100 mb-0">
+                            <div class="kpi-header">
+                                <span class="kpi-title">F1-Score</span>
+                                <div class="kpi-icon bg-warning-subtle text-warning">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value text-warning" id="metricF1">--%</div>
+                            <div class="kpi-subtitle">Harmonic mean metric</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confusion Matrix & Class Breakdown Row -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="dashboard-card h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="fw-bold mb-0">Authentic Confusion Matrix</h5>
+                                <span class="badge bg-light text-dark border">Weka 3.8.6 Output</span>
+                            </div>
+                            <p class="small text-muted mb-3">Predicted class vs True Ground Truth distribution calculated by Weka Cross-Validation engine.</p>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle mb-0" id="confusionMatrixTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Actual \ Predicted</th>
+                                            <th class="text-success">LOW</th>
+                                            <th class="text-warning">MEDIUM</th>
+                                            <th class="text-danger">HIGH</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="confusionMatrixBody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="dashboard-card h-100">
+                            <h5 class="fw-bold mb-3">Class-Specific Performance Breakdown</h5>
+                            <p class="small text-muted mb-3">Detailed classification metrics by public health risk level.</p>
+
+                            <div class="table-responsive">
+                                <table class="table custom-table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Class</th>
+                                            <th>Precision</th>
+                                            <th>Recall</th>
+                                            <th>F1-Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="classMetricsBody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cross Validation Log & Architecture Details -->
+                <div class="dashboard-card">
+                    <h5 class="fw-bold mb-3">Model Architecture & Cross-Validation Diagnostic Log</h5>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3"><strong>Model Classifier:</strong> Weka Random Forest</div>
+                        <div class="col-md-3"><strong>Ensemble Size:</strong> 100 Decision Trees</div>
+                        <div class="col-md-3"><strong>Evaluation Strategy:</strong> 10-Fold Stratified CV</div>
+                        <div class="col-md-3"><strong>Dataset Sample Size:</strong> <span id="modelInstancesCount">240 Instances</span></div>
+                    </div>
+
+                    <pre class="bg-dark text-success p-3 rounded-3 small font-monospace" style="max-height: 250px; overflow-y: auto;" id="cvLogSummary">
+Loading cross-validation evaluation output from backend...
+                    </pre>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadModelMetrics();
+
+            document.getElementById('btnRetrainModel').addEventListener('click', async () => {
+                const btn = document.getElementById('btnRetrainModel');
+                const spinner = document.getElementById('retrainSpinner');
+                btn.disabled = true;
+                spinner.classList.remove('d-none');
+
+                try {
+                    const res = await api.trainModel();
+                    alert('Model Retraining Complete! Accuracy: ' + res.accuracy + '%');
+                    loadModelMetrics();
+                } catch (err) {
+                    alert('Training failed: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    spinner.classList.add('d-none');
+                }
+            });
+        });
+
+        async function loadModelMetrics() {
+            try {
+                const evalData = await api.getModelEvaluation();
+                if (!evalData) return;
+
+                document.getElementById('metricAccuracy').textContent = evalData.accuracy + '%';
+                document.getElementById('metricPrecision').textContent = evalData.precision + '%';
+                document.getElementById('metricRecall').textContent = evalData.recall + '%';
+                document.getElementById('metricF1').textContent = evalData.f1Score + '%';
+                document.getElementById('modelInstancesCount').textContent = evalData.totalInstances + ' Instances';
+
+                // Render Confusion Matrix
+                const cmBody = document.getElementById('confusionMatrixBody');
+                if (evalData.confusionMatrix && evalData.confusionMatrix.length >= 3) {
+                    const m = evalData.confusionMatrix;
+                    cmBody.innerHTML = `
+                        <tr>
+                            <th class="table-light text-start text-success">Actual LOW</th>
+                            <td class="bg-success-subtle fw-bold text-success">${m[0][0]}</td>
+                            <td>${m[0][1]}</td>
+                            <td>${m[0][2]}</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light text-start text-warning">Actual MEDIUM</th>
+                            <td>${m[1][0]}</td>
+                            <td class="bg-warning-subtle fw-bold text-warning">${m[1][1]}</td>
+                            <td>${m[1][2]}</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light text-start text-danger">Actual HIGH</th>
+                            <td>${m[2][0]}</td>
+                            <td>${m[2][1]}</td>
+                            <td class="bg-danger-subtle fw-bold text-danger">${m[2][2]}</td>
+                        </tr>
+                    `;
+                }
+
+                // Render Class Metrics Table
+                const classBody = document.getElementById('classMetricsBody');
+                if (evalData.classMetrics) {
+                    classBody.innerHTML = Object.entries(evalData.classMetrics).map(([cls, metrics]) => {
+                        let badge = 'bg-success';
+                        if (cls === 'HIGH') badge = 'bg-danger';
+                        else if (cls === 'MEDIUM') badge = 'bg-warning text-dark';
+
+                        return `
+                            <tr>
+                                <td><span class="badge ${badge}">${cls}</span></td>
+                                <td>${metrics.precision}%</td>
+                                <td>${metrics.recall}%</td>
+                                <td>${metrics.f1Score}%</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+                // Render CV Log Summary
+                const logEl = document.getElementById('cvLogSummary');
+                if (logEl && evalData.crossValidationSummary) {
+                    logEl.textContent = evalData.crossValidationSummary;
+                }
+            } catch (err) {
+                console.error('Error loading model metrics:', err);
+            }
+        }
+    </script>
+</body>
+</html>

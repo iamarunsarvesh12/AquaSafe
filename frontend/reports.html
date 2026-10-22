@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSafe - Analytical Public Health Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        @media print {
+            .sidebar, .top-navbar, .filter-card, .btn-print, .nav-indicators {
+                display: none !important;
+            }
+            .main-wrapper {
+                margin-left: 0 !important;
+            }
+            .content-body {
+                padding: 0 !important;
+            }
+            .dashboard-card {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>AquaSafe</h4>
+                    <span>Risk Intelligence</span>
+                </div>
+            </a>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Analytics & Monitoring</li>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
+                <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+
+                <li class="menu-category">Surveillance Data</li>
+                <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="reports.html" class="active"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+
+                <li class="menu-category">System</li>
+                <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h3>Surveillance Analytics Reports</h3>
+                    <p>Comprehensive Public Health Intelligence & Executive Summaries</p>
+                </div>
+                <div class="nav-indicators">
+                    <button class="btn btn-sm btn-outline-primary btn-print" onclick="window.print()">
+                        <i class="fa-solid fa-print me-1"></i> Print / Export PDF
+                    </button>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <!-- Filter Section -->
+                <div class="dashboard-card mb-4 filter-card">
+                    <form id="reportFilterForm" class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Target District</label>
+                            <select class="form-select form-select-sm" id="filterDistrict">
+                                <option value="" selected>All Districts (State-Wide)</option>
+                                <option value="Chennai">Chennai</option>
+                                <option value="Madurai">Madurai</option>
+                                <option value="Coimbatore">Coimbatore</option>
+                                <option value="Tiruchirappalli">Tiruchirappalli</option>
+                                <option value="Salem">Salem</option>
+                                <option value="Tirunelveli">Tirunelveli</option>
+                                <option value="Thanjavur">Thanjavur</option>
+                                <option value="Vellore">Vellore</option>
+                                <option value="Erode">Erode</option>
+                                <option value="Kanyakumari">Kanyakumari</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">Start Date</label>
+                            <input type="date" class="form-control form-control-sm" id="filterStartDate" value="2025-01-01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">End Date</label>
+                            <input type="date" class="form-control form-control-sm" id="filterEndDate" value="2025-12-31">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">
+                                <i class="fa-solid fa-filter me-1"></i> Generate
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Printable Report Sheet -->
+                <div class="dashboard-card p-4" id="reportContentContainer">
+                    <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">AquaSafe Risk Intelligence Report</h4>
+                            <p class="text-muted small mb-0">Automated Public Health Big Data & ML Assessment</p>
+                        </div>
+                        <div class="text-end small text-muted">
+                            <div><strong>Report Date:</strong> <span id="repGeneratedDate">--</span></div>
+                            <div><strong>Target Zone:</strong> <span id="repTargetDistrict" class="fw-bold text-primary">All Districts</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Executive Summary KPI Blocks -->
+                    <div class="row g-3 mb-4 text-center">
+                        <div class="col-md-3">
+                            <div class="bg-light p-3 rounded-3 border">
+                                <div class="small text-muted text-uppercase">High-Risk Audits</div>
+                                <h4 class="fw-bold text-danger mb-0" id="repHighRisk">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light p-3 rounded-3 border">
+                                <div class="small text-muted text-uppercase">Moderate Risk</div>
+                                <h4 class="fw-bold text-warning mb-0" id="repMedRisk">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light p-3 rounded-3 border">
+                                <div class="small text-muted text-uppercase">Low Risk</div>
+                                <h4 class="fw-bold text-success mb-0" id="repLowRisk">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-light p-3 rounded-3 border">
+                                <div class="small text-muted text-uppercase">Total Predictions</div>
+                                <h4 class="fw-bold text-dark mb-0" id="repTotalPred">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease & Water Quality Summary Tables -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-dark mb-2">Cumulative Disease Surveillance Burden</h6>
+                            <table class="table table-sm table-bordered">
+                                <tbody id="repDiseaseTable">
+                                    <tr><td>Total Reported Cholera</td><td class="fw-bold" id="repCholera">--</td></tr>
+                                    <tr><td>Total Reported Typhoid</td><td class="fw-bold" id="repTyphoid">--</td></tr>
+                                    <tr><td>Total Reported Diarrhea</td><td class="fw-bold" id="repDiarrhea">--</td></tr>
+                                    <tr><td>Total Reported Hepatitis</td><td class="fw-bold" id="repHepatitis">--</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-dark mb-2">Water Quality Parameter Averages</h6>
+                            <table class="table table-sm table-bordered">
+                                <tbody id="repWqTable">
+                                    <tr><td>Average pH Level</td><td class="fw-bold" id="repAvgPh">--</td></tr>
+                                    <tr><td>Average Turbidity (NTU)</td><td class="fw-bold" id="repAvgTurb">--</td></tr>
+                                    <tr><td>Average TDS (mg/L)</td><td class="fw-bold" id="repAvgTds">--</td></tr>
+                                    <tr><td>Average Dissolved Oxygen (mg/L)</td><td class="fw-bold" id="repAvgDo">--</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Key Findings & Insights -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2">Analytical Findings & Observations</h6>
+                        <ul class="list-group list-group-flush small" id="repFindingsList">
+                            <li class="list-group-item">Monitored regional water treatment infrastructure maintains nominal bacterial containment.</li>
+                            <li class="list-group-item">Turbidity spikes strongly correlate with localized precipitation runoff events.</li>
+                            <li class="list-group-item">Continuous surveillance advised in regions with lower sanitation coverage percentiles.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="disclaimer-box">
+                        <i class="fa-solid fa-circle-info text-primary mt-1"></i>
+                        <div>
+                            <strong>Legal / Medical Disclaimer:</strong> Prediction indicates estimated risk based on available project data. It is not a medical diagnosis or confirmation of an outbreak.
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReportData();
+
+            document.getElementById('reportFilterForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                loadReportData();
+            });
+        });
+
+        async function loadReportData() {
+            const district = document.getElementById('filterDistrict').value;
+            const start = document.getElementById('filterStartDate').value;
+            const end = document.getElementById('filterEndDate').value;
+
+            try {
+                const rep = await api.getReports(district, start, end);
+                if (!rep) return;
+
+                document.getElementById('repGeneratedDate').textContent = new Date(rep.generatedAt).toLocaleString();
+                document.getElementById('repTargetDistrict').textContent = rep.filterDistrict || 'All Districts';
+
+                if (rep.riskSummary) {
+                    document.getElementById('repHighRisk').textContent = rep.riskSummary.highRiskCount;
+                    document.getElementById('repMedRisk').textContent = rep.riskSummary.mediumRiskCount;
+                    document.getElementById('repLowRisk').textContent = rep.riskSummary.lowRiskCount;
+                    document.getElementById('repTotalPred').textContent = rep.riskSummary.totalEvaluated;
+                }
+
+                if (rep.diseaseSummary) {
+                    document.getElementById('repCholera').textContent = rep.diseaseSummary.choleraTotal || 0;
+                    document.getElementById('repTyphoid').textContent = rep.diseaseSummary.typhoidTotal || 0;
+                    document.getElementById('repDiarrhea').textContent = rep.diseaseSummary.diarrheaTotal || 0;
+                    document.getElementById('repHepatitis').textContent = rep.diseaseSummary.hepatitisTotal || 0;
+                }
+
+                if (rep.waterQualitySummary) {
+                    document.getElementById('repAvgPh').textContent = rep.waterQualitySummary.avgPh || '-';
+                    document.getElementById('repAvgTurb').textContent = (rep.waterQualitySummary.avgTurbidity || '-') + ' NTU';
+                    document.getElementById('repAvgTds').textContent = (rep.waterQualitySummary.avgTds || '-') + ' mg/L';
+                    document.getElementById('repAvgDo').textContent = (rep.waterQualitySummary.avgDissolvedOxygen || '-') + ' mg/L';
+                }
+
+                if (rep.keyFindings && rep.keyFindings.length > 0) {
+                    document.getElementById('repFindingsList').innerHTML = rep.keyFindings.map(f => `
+                        <li class="list-group-item py-2 px-0"><i class="fa-solid fa-angle-right text-primary me-2"></i>${escapeHtml(f)}</li>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Error loading report:', err);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>

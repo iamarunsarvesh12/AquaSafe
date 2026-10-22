@@ -1,0 +1,470 @@
+/* ==========================================================================
+   AquaSafe: Water-Borne Disease Risk Intelligence
+   Professional Healthcare & Big Data Analytics Design System
+   ========================================================================== */
+
+:root {
+    --primary: #0284c7;
+    --primary-light: #38bdf8;
+    --primary-dark: #0369a1;
+    --primary-subtle: #e0f2fe;
+    
+    --secondary: #0d9488;
+    --secondary-light: #2dd4bf;
+    --secondary-subtle: #ccfbf1;
+
+    --dark: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #f8fafc;
+
+    --risk-low: #10b981;
+    --risk-low-bg: #ecfdf5;
+    --risk-med: #f59e0b;
+    --risk-med-bg: #fffbeb;
+    --risk-high: #ef4444;
+    --risk-high-bg: #fef2f2;
+
+    --sidebar-width: 260px;
+    --header-height: 70px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    --card-shadow-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--slate-50);
+    color: var(--slate-700);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* ---------------- Layout & Sidebar ---------------- */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    background: #ffffff;
+    border-right: 1px solid var(--slate-200);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-brand {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--slate-200);
+    text-decoration: none;
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+}
+
+.brand-text h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.brand-text span {
+    font-size: 0.7rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+}
+
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 0.75rem;
+    list-style: none;
+}
+
+.menu-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.75rem 1rem 0.25rem;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-md);
+    color: var(--slate-600);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar-menu a i {
+    width: 24px;
+    font-size: 1.1rem;
+    margin-right: 0.75rem;
+    color: var(--slate-400);
+    transition: color 0.2s ease;
+}
+
+.sidebar-menu a:hover {
+    background-color: var(--slate-100);
+    color: var(--primary-dark);
+}
+
+.sidebar-menu a:hover i {
+    color: var(--primary);
+}
+
+.sidebar-menu a.active {
+    background-color: var(--primary-subtle);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.sidebar-menu a.active i {
+    color: var(--primary);
+}
+
+.sidebar-menu .badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+}
+
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--slate-200);
+    background: #ffffff;
+}
+
+/* ---------------- Main Content ---------------- */
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.top-navbar {
+    height: var(--header-height);
+    background: #ffffff;
+    border-bottom: 1px solid var(--slate-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.page-title h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+}
+
+.page-title p {
+    font-size: 0.8rem;
+    color: var(--slate-400);
+    margin: 0;
+}
+
+.nav-indicators {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.freshness-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 30px;
+    border: 1px solid transparent;
+}
+
+.freshness-badge.live {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.freshness-badge.stored {
+    background-color: #e0f2fe;
+    color: #075985;
+    border-color: #bae6fd;
+}
+
+.freshness-badge.demo {
+    background-color: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.content-body {
+    padding: 2rem;
+    flex: 1;
+}
+
+/* ---------------- Cards & Widgets ---------------- */
+.dashboard-card {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--slate-200);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.kpi-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.kpi-card.kpi-primary::before { background-color: var(--primary); }
+.kpi-card.kpi-teal::before { background-color: var(--secondary); }
+.kpi-card.kpi-high::before { background-color: var(--risk-high); }
+.kpi-card.kpi-med::before { background-color: var(--risk-med); }
+.kpi-card.kpi-low::before { background-color: var(--risk-low); }
+
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.kpi-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.kpi-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.kpi-subtitle {
+    font-size: 0.75rem;
+    color: var(--slate-400);
+}
+
+/* ---------------- Prediction Engine UI ---------------- */
+.result-card {
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+.result-card.risk-high {
+    background: linear-gradient(180deg, #fff5f5 0%, #fef2f2 100%);
+    border-color: #fca5a5;
+}
+
+.result-card.risk-medium {
+    background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+    border-color: #fcd34d;
+}
+
+.result-card.risk-low {
+    background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #86efac;
+}
+
+.risk-badge-large {
+    display: inline-block;
+    padding: 0.5rem 1.75rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border-radius: 40px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.risk-badge-large.high { background-color: var(--risk-high); color: #ffffff; }
+.risk-badge-large.medium { background-color: var(--risk-med); color: #ffffff; }
+.risk-badge-large.low { background-color: var(--risk-low); color: #ffffff; }
+
+.disclaimer-box {
+    background-color: var(--slate-100);
+    border-left: 4px solid var(--primary);
+    padding: 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--slate-600);
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+/* ---------------- Leaflet Map ---------------- */
+#riskMap {
+    height: 550px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    z-index: 10;
+}
+
+.map-legend {
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* ---------------- Table & Components ---------------- */
+.table-responsive {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--slate-200);
+}
+
+.custom-table {
+    margin-bottom: 0;
+    background: #ffffff;
+}
+
+.custom-table thead th {
+    background-color: var(--slate-100);
+    color: var(--slate-700);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 0.85rem 1rem;
+}
+
+.custom-table tbody td {
+    padding: 0.85rem 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--slate-100);
+    vertical-align: middle;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ---------------- Responsive Sidebar ---------------- */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .main-wrapper {
+        margin-left: 0;
+    }
+}

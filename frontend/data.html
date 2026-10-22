@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSafe - Data Collection & Preprocessing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>AquaSafe</h4>
+                    <span>Risk Intelligence</span>
+                </div>
+            </a>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Analytics & Monitoring</li>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
+                <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+
+                <li class="menu-category">Surveillance Data</li>
+                <li><a href="data.html" class="active"><i class="fa-solid fa-database"></i> Data Management</a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+
+                <li class="menu-category">System</li>
+                <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h3>Data Collection & Preprocessing</h3>
+                    <p>Multi-Source CSV Ingestion, Validation & Cleaning Pipeline</p>
+                </div>
+                <div class="nav-indicators">
+                    <button class="btn btn-sm btn-outline-primary" id="btnRunBigData">
+                        <i class="fa-solid fa-network-wired me-1"></i> Trigger Big Data Job
+                    </button>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <!-- Data Preprocessing Action Section -->
+                <div class="dashboard-card mb-4 bg-primary-subtle border-primary-subtle">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1"><i class="fa-solid fa-wand-magic-sparkles text-primary me-2"></i>Automated Data Preprocessing Engine</h5>
+                            <p class="small text-muted mb-0">Executes missing value handling, duplicate record removal, invalid value filtration, and deterministic risk label integration.</p>
+                        </div>
+                        <button class="btn btn-primary px-4 fw-bold" id="btnRunPreprocessing">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" id="preprocessSpinner"></span>
+                            <i class="fa-solid fa-play me-1"></i> Run Data Preprocessing
+                        </button>
+                    </div>
+
+                    <!-- Preprocessing Result Cards -->
+                    <div class="row g-3 mt-3 d-none" id="preprocessStatsRow">
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded-3 border">
+                                <span class="small text-muted">Records Before</span>
+                                <h4 class="fw-bold text-dark mb-0" id="statBefore">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded-3 border">
+                                <span class="small text-muted">Records After Cleaning</span>
+                                <h4 class="fw-bold text-success mb-0" id="statAfter">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded-3 border">
+                                <span class="small text-muted">Duplicates Removed</span>
+                                <h4 class="fw-bold text-warning mb-0" id="statDuplicates">0</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded-3 border">
+                                <span class="small text-muted">Missing/Invalid Handled</span>
+                                <h4 class="fw-bold text-primary mb-0" id="statMissing">0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CSV Upload Section -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="dashboard-card h-100">
+                            <h5 class="fw-bold mb-3">Upload Surveillance Dataset</h5>
+                            <form id="uploadCsvForm">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">Dataset Type</label>
+                                    <select class="form-select" id="datasetTypeSelect" required>
+                                        <option value="water_quality">Water Quality (pH, Turbidity, TDS, DO, Temp)</option>
+                                        <option value="weather_data">Weather Records (Temp, Rainfall, Humidity)</option>
+                                        <option value="disease_records">Disease Surveillance (Cholera, Typhoid, Diarrhea, Hepatitis)</option>
+                                        <option value="population_data">Population & Sanitation (Demographics & Coordinates)</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">Select CSV File</label>
+                                    <input type="file" class="form-control" id="csvFileInput" accept=".csv" required>
+                                    <small class="text-muted">Standard UTF-8 comma-delimited CSV formats supported.</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 fw-bold" id="btnUploadSubmit">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" id="uploadSpinner"></span>
+                                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Upload & Ingest Dataset
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Upload Breakdown & Validation Box -->
+                    <div class="col-lg-6">
+                        <div class="dashboard-card h-100" id="uploadSummaryCard">
+                            <h5 class="fw-bold mb-3">Validation & Ingestion Diagnostics</h5>
+                            <div class="text-center py-4 text-muted" id="uploadPlaceholder">
+                                <i class="fa-solid fa-file-csv fa-3x mb-2 text-secondary opacity-50"></i>
+                                <p class="small mb-0">Upload a CSV file on the left to view validation metrics, schema adherence, and preview records.</p>
+                            </div>
+                            <div id="uploadResultDetails" class="d-none">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-4 text-center p-2 bg-light rounded">
+                                        <div class="small text-muted">Total Rows</div>
+                                        <h5 class="fw-bold text-dark mb-0" id="upTotal">0</h5>
+                                    </div>
+                                    <div class="col-4 text-center p-2 bg-success-subtle rounded">
+                                        <div class="small text-success">Valid Rows</div>
+                                        <h5 class="fw-bold text-success mb-0" id="upValid">0</h5>
+                                    </div>
+                                    <div class="col-4 text-center p-2 bg-danger-subtle rounded">
+                                        <div class="small text-danger">Invalid / Duplicates</div>
+                                        <h5 class="fw-bold text-danger mb-0" id="upInvalid">0</h5>
+                                    </div>
+                                </div>
+                                <h6 class="fw-bold small text-muted text-uppercase mb-2">Ingestion Preview (First 5 Rows)</h6>
+                                <div class="table-responsive" style="max-height: 180px;">
+                                    <table class="table table-sm custom-table mb-0" id="uploadPreviewTable">
+                                        <thead><tr id="previewTableHead"></tr></thead>
+                                        <tbody id="previewTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import History Table -->
+                <div class="dashboard-card">
+                    <h5 class="fw-bold mb-3">Dataset Import Audit Log</h5>
+                    <div class="table-responsive">
+                        <table class="table custom-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Filename</th>
+                                    <th>Dataset Type</th>
+                                    <th>Total Records</th>
+                                    <th>Valid Records</th>
+                                    <th>Duplicates Filtered</th>
+                                    <th>Missing Values</th>
+                                    <th>Status</th>
+                                    <th>Import Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="importHistoryBody">
+                                <tr><td colspan="8" class="text-center text-muted py-3">Loading import history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadImportHistory();
+            setupUploadForm();
+            setupPreprocessing();
+
+            document.getElementById('btnRunBigData').addEventListener('click', async () => {
+                try {
+                    const res = await api.triggerBigDataProcessing();
+                    alert(`Big Data Pipeline executed!\nEngine: ${res.engineName}\nRecords Processed: ${res.recordsProcessed}\nProcessing Time: ${res.processingTimeMs} ms\nStatus: ${res.status}`);
+                } catch (err) {
+                    alert('Big Data trigger failed: ' + err.message);
+                }
+            });
+        });
+
+        function setupPreprocessing() {
+            const btn = document.getElementById('btnRunPreprocessing');
+            const spinner = document.getElementById('preprocessSpinner');
+            const statsRow = document.getElementById('preprocessStatsRow');
+
+            btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                spinner.classList.remove('d-none');
+
+                try {
+                    const stats = await api.runPreprocessing();
+                    document.getElementById('statBefore').textContent = stats.recordsBefore.toLocaleString();
+                    document.getElementById('statAfter').textContent = stats.recordsAfterCleaning.toLocaleString();
+                    document.getElementById('statDuplicates').textContent = stats.duplicatesRemoved.toLocaleString();
+                    document.getElementById('statMissing').textContent = (stats.missingValuesHandled + stats.invalidValuesFiltered).toLocaleString();
+                    statsRow.classList.remove('d-none');
+                    alert('Data Preprocessing and Ground Truth Integration complete!');
+                } catch (err) {
+                    alert('Preprocessing failed: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    spinner.classList.add('d-none');
+                }
+            });
+        }
+
+        function setupUploadForm() {
+            const form = document.getElementById('uploadCsvForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fileInput = document.getElementById('csvFileInput');
+                const typeSelect = document.getElementById('datasetTypeSelect');
+
+                if (!fileInput.files || fileInput.files.length === 0) return;
+
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('datasetType', typeSelect.value);
+
+                const btn = document.getElementById('btnUploadSubmit');
+                const spinner = document.getElementById('uploadSpinner');
+                btn.disabled = true;
+                spinner.classList.remove('d-none');
+
+                try {
+                    const res = await api.uploadDataset(formData);
+                    renderUploadResult(res);
+                    await loadImportHistory();
+                    form.reset();
+                } catch (err) {
+                    alert('Upload failed: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    spinner.classList.add('d-none');
+                }
+            });
+        }
+
+        function renderUploadResult(res) {
+            document.getElementById('uploadPlaceholder').classList.add('d-none');
+            const details = document.getElementById('uploadResultDetails');
+            details.classList.remove('d-none');
+
+            document.getElementById('upTotal').textContent = res.totalRecords;
+            document.getElementById('upValid').textContent = res.validRecords;
+            document.getElementById('upInvalid').textContent = res.invalidRecords + res.duplicateRecords;
+
+            // Render Preview Rows
+            if (res.previewRows && res.previewRows.length > 0) {
+                const cols = Object.keys(res.previewRows[0]);
+                document.getElementById('previewTableHead').innerHTML = cols.map(c => `<th>${c}</th>`).join('');
+                document.getElementById('previewTableBody').innerHTML = res.previewRows.slice(0, 5).map(row => `
+                    <tr>${cols.map(c => `<td>${row[c] || ''}</td>`).join('')}</tr>
+                `).join('');
+            }
+        }
+
+        async function loadImportHistory() {
+            const tbody = document.getElementById('importHistoryBody');
+            try {
+                const history = await api.getImportHistory();
+                if (!history || history.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">No import history found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = history.map(h => `
+                    <tr>
+                        <td><strong>${escapeHtml(h.filename)}</strong></td>
+                        <td><span class="badge bg-light text-dark">${escapeHtml(h.datasetType)}</span></td>
+                        <td>${h.totalRecords}</td>
+                        <td class="text-success fw-bold">${h.validRecords}</td>
+                        <td>${h.duplicateRecords}</td>
+                        <td>${h.missingValues}</td>
+                        <td><span class="badge bg-success">${h.status}</span></td>
+                        <td>${new Date(h.importTime).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.warn('Error loading import history:', err);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>

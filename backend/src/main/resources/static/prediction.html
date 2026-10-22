@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaSafe - Water-Borne Disease Risk Prediction Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>AquaSafe</h4>
+                    <span>Risk Intelligence</span>
+                </div>
+            </a>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Analytics & Monitoring</li>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
+                <li><a href="prediction.html" class="active"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+
+                <li class="menu-category">Surveillance Data</li>
+                <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+
+                <li class="menu-category">System</li>
+                <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h3>Risk Prediction Engine</h3>
+                    <p>Machine Learning Multi-Indicator Evaluation (Weka Random Forest)</p>
+                </div>
+                <div class="nav-indicators">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+                        <i class="fa-solid fa-microchip me-1"></i> Active Model: RandomForest-v1.0
+                    </span>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <!-- Preset Quick Buttons for Fast Testing -->
+                <div class="dashboard-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-bolt text-warning me-1"></i> Quick Regional Presets (Evaluator Demo Test Scenarios):</h6>
+                        <span class="text-muted small">Auto-populates indicator thresholds</span>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-danger preset-btn" data-district="Salem">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Salem (High Runoff & Elevated Turbidity)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning preset-btn" data-district="Chennai">
+                            <i class="fa-solid fa-cloud-showers-heavy me-1"></i> Chennai (Monsoon Precipitation Surge)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success preset-btn" data-district="Coimbatore">
+                            <i class="fa-solid fa-shield-halved me-1"></i> Coimbatore (Nominal Treated Baseline)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success preset-btn" data-district="Kanyakumari">
+                            <i class="fa-solid fa-check me-1"></i> Kanyakumari (High Sanitation Safe Zone)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <!-- Form Input Column -->
+                    <div class="col-lg-7">
+                        <div class="dashboard-card">
+                            <h5 class="fw-bold mb-3 border-bottom pb-2">Multi-Factor Feature Parameters</h5>
+                            
+                            <form id="predictionForm">
+                                <div class="row g-3">
+                                    <!-- District Selection -->
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold small">Region / District (Tamil Nadu)</label>
+                                        <select class="form-select" id="predDistrict" required>
+                                            <option value="Chennai" selected>Chennai</option>
+                                            <option value="Madurai">Madurai</option>
+                                            <option value="Coimbatore">Coimbatore</option>
+                                            <option value="Tiruchirappalli">Tiruchirappalli</option>
+                                            <option value="Salem">Salem</option>
+                                            <option value="Tirunelveli">Tirunelveli</option>
+                                            <option value="Thanjavur">Thanjavur</option>
+                                            <option value="Vellore">Vellore</option>
+                                            <option value="Erode">Erode</option>
+                                            <option value="Kanyakumari">Kanyakumari</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Water Quality Section -->
+                                    <div class="col-12 mt-3">
+                                        <h6 class="text-primary fw-bold small text-uppercase letter-spacing-1">1. Water Quality Indicators</h6>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-3">
+                                        <label class="form-label small">pH Level (0 - 14)</label>
+                                        <input type="number" step="0.01" class="form-control form-control-sm" id="predPh" value="7.2" required>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3">
+                                        <label class="form-label small">Turbidity (NTU)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predTurbidity" value="3.5" required>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3">
+                                        <label class="form-label small">TDS (mg/L)</label>
+                                        <input type="number" step="1" class="form-control form-control-sm" id="predTds" value="320" required>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3">
+                                        <label class="form-label small">Dissolved Oxygen (mg/L)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predDo" value="6.8" required>
+                                    </div>
+
+                                    <!-- Meteorological Section -->
+                                    <div class="col-12 mt-3">
+                                        <h6 class="text-primary fw-bold small text-uppercase letter-spacing-1">2. Meteorological Conditions</h6>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Temperature (°C)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predTemp" value="29.0" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Rainfall (mm)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predRainfall" value="15.0" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Humidity (%)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predHumidity" value="68.0" required>
+                                    </div>
+
+                                    <!-- Historical and Sanitary Factors -->
+                                    <div class="col-12 mt-3">
+                                        <h6 class="text-primary fw-bold small text-uppercase letter-spacing-1">3. Epidemiological & Sanitary Demographics</h6>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Prior Disease Cases</label>
+                                        <input type="number" class="form-control form-control-sm" id="predCases" value="6" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Pop. Density (people/km²)</label>
+                                        <input type="number" class="form-control form-control-sm" id="predDensity" value="26900" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Sanitation Coverage (%)</label>
+                                        <input type="number" step="0.1" class="form-control form-control-sm" id="predSanitation" value="92.5" required>
+                                    </div>
+
+                                    <div class="col-12 mt-4">
+                                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-uppercase" id="btnPredictRisk">
+                                            <span class="spinner-border spinner-border-sm me-2 d-none" id="predictSpinner"></span>
+                                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Predict Estimated Risk
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Result Container Column -->
+                    <div class="col-lg-5">
+                        <div id="predictionResultContainer">
+                            <div class="dashboard-card text-center py-5 text-muted">
+                                <div class="mb-3 text-secondary opacity-50">
+                                    <i class="fa-solid fa-chart-line fa-4x"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark">Awaiting Prediction Input</h5>
+                                <p class="small px-4 text-muted mb-0">
+                                    Select a district and parameters or use one of the quick regional presets above, then click <strong>Predict Estimated Risk</strong> to run Weka Random Forest classification.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Predictions Table -->
+                <div class="dashboard-card">
+                    <h5 class="fw-bold mb-3">Recent Model Prediction Audits</h5>
+                    <div class="table-responsive">
+                        <table class="table custom-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>District</th>
+                                    <th>Predicted Risk</th>
+                                    <th>Calculated Probability</th>
+                                    <th>Model Version</th>
+                                    <th>Timestamp</th>
+                                    <th>Indicator Snapshot</th>
+                                </tr>
+                            </thead>
+                            <tbody id="predictionHistoryBody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-3">Loading historical predictions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/prediction.js"></script>
+</body>
+</html>
