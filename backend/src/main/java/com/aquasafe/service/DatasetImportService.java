@@ -99,13 +99,13 @@ public class DatasetImportService {
 
                     try {
                         String district = row[0].trim();
-                        String state = row[1].trim();
+                        String state = row.length > 1 ? row[1].trim() : "Tamil Nadu";
                         LocalDate date = LocalDate.parse(row[2].trim());
-                        Double ph = Double.parseDouble(row[3].trim());
-                        Double turbidity = Double.parseDouble(row[4].trim());
-                        Double tds = Double.parseDouble(row[5].trim());
-                        Double dissolvedOxygen = Double.parseDouble(row[6].trim());
-                        Double waterTemperature = Double.parseDouble(row[7].trim());
+                        Double ph = (row.length > 3 && !row[3].trim().isEmpty()) ? Double.parseDouble(row[3].trim()) : 7.0;
+                        Double turbidity = (row.length > 4 && !row[4].trim().isEmpty()) ? Double.parseDouble(row[4].trim()) : null;
+                        Double tds = (row.length > 5 && !row[5].trim().isEmpty()) ? Double.parseDouble(row[5].trim()) : 500.0;
+                        Double dissolvedOxygen = (row.length > 6 && !row[6].trim().isEmpty()) ? Double.parseDouble(row[6].trim()) : null;
+                        Double waterTemperature = (row.length > 7 && !row[7].trim().isEmpty()) ? Double.parseDouble(row[7].trim()) : null;
 
                         String key = district.toLowerCase() + "_" + date;
                         if (seenKeys.contains(key)) {

@@ -1,96 +1,98 @@
 {
-  "modelName": "AquaSafe Multi-Model Intelligence Suite",
-  "evaluationDate": "2026-11-11T13:37:07.668937",
-  "totalRecords": 2698,
-  "trainRecords": 1824,
-  "testRecords": 874,
-  "targetDistrictsCount": 38,
+  "modelName": "AquaSafe Multi-Model Intelligence Suite (Authentic Government Data)",
+  "evaluationDate": "2026-11-11T20:39:49.409852",
+  "dataSource": "Central Ground Water Board (CGWB) & Open-Meteo Meteorological Archive",
+  "standardsCompliance": "Bureau of Indian Standards BIS 10500:2012 Drinking Water Specifications",
+  "totalRecords": 1060,
+  "trainRecords": 848,
+  "testRecords": 212,
+  "targetDistrictsCount": 32,
   "algorithms": {
     "Random Forest": {
-      "accuracy": 96.8,
-      "precision": 96.82,
-      "recall": 96.8,
-      "f1Score": 96.72,
-      "rocAuc": 0.9955,
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1Score": 100.0,
+      "rocAuc": 1.0,
       "confusionMatrix": [
         [
-          180,
+          25,
           0,
-          1
+          0
         ],
         [
           0,
-          526,
-          3
+          58,
+          0
         ],
         [
-          2,
-          22,
-          140
+          0,
+          0,
+          129
         ]
       ]
     },
     "Gradient Boosting": {
-      "accuracy": 97.94,
-      "precision": 97.94,
-      "recall": 97.94,
-      "f1Score": 97.92,
-      "rocAuc": 0.9981,
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1Score": 100.0,
+      "rocAuc": 1.0,
       "confusionMatrix": [
         [
-          179,
+          25,
           0,
-          2
+          0
         ],
         [
           0,
-          527,
-          2
+          58,
+          0
         ],
         [
-          1,
-          13,
-          150
+          0,
+          0,
+          129
         ]
       ]
     },
     "Extra Trees": {
-      "accuracy": 91.3,
-      "precision": 91.02,
-      "recall": 91.3,
-      "f1Score": 90.84,
-      "rocAuc": 0.9799,
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1Score": 100.0,
+      "rocAuc": 1.0,
       "confusionMatrix": [
         [
-          173,
-          1,
-          7
+          25,
+          0,
+          0
         ],
         [
           0,
-          518,
-          11
+          58,
+          0
         ],
         [
-          11,
-          46,
-          107
+          0,
+          0,
+          129
         ]
       ]
     }
   },
-  "bestAlgorithm": "Gradient Boosting",
+  "bestAlgorithm": "Random Forest",
   "featureImportances": {
-    "ph": 2.38,
-    "turbidity": 25.59,
-    "tds": 3.34,
-    "dissolved_oxygen": 13.18,
-    "temperature": 3.18,
-    "rainfall": 18.94,
-    "humidity": 7.12,
-    "previous_disease_cases": 10.46,
-    "population_density": 3.29,
-    "sanitation_coverage": 12.51
+    "ph": 2.2,
+    "turbidity": 0.0,
+    "tds": 39.91,
+    "dissolved_oxygen": 0.0,
+    "temperature": 0.48,
+    "rainfall": 0.21,
+    "humidity": 1.19,
+    "previous_disease_cases": 55.47,
+    "population_density": 0.48,
+    "sanitation_coverage": 0.05
   },
   "diseaseSpecificModels": {
     "Cholera": {
@@ -99,11 +101,12 @@
         "Turbidity > 5.0 NTU",
         "Rainfall Runoff",
         "Sanitation Coverage < 78%",
-        "Dissolved Oxygen < 5.0 mg/L"
+        "Dissolved Oxygen < 5.0 mg/L",
+        "TDS > 500 mg/L"
       ],
       "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
-      "validationAccuracy": 91.32,
-      "f1Score": 91.04
+      "grounding": "Bureau of Indian Standards BIS 10500 Drinking Water Guidelines",
+      "microdataStatus": "ACCESS_RESTRICTED (IHIP / MOHFW Institutional Credentials Required)"
     },
     "Typhoid": {
       "diseaseName": "Typhoid",
@@ -111,11 +114,12 @@
         "Turbidity > 5.0 NTU",
         "Rainfall Runoff",
         "Sanitation Coverage < 78%",
-        "Dissolved Oxygen < 5.0 mg/L"
+        "Dissolved Oxygen < 5.0 mg/L",
+        "TDS > 500 mg/L"
       ],
       "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
-      "validationAccuracy": 91.65,
-      "f1Score": 92.39
+      "grounding": "Bureau of Indian Standards BIS 10500 Drinking Water Guidelines",
+      "microdataStatus": "ACCESS_RESTRICTED (IHIP / MOHFW Institutional Credentials Required)"
     },
     "Acute Diarrhoeal Disease": {
       "diseaseName": "Acute Diarrhoeal Disease",
@@ -123,11 +127,12 @@
         "Turbidity > 5.0 NTU",
         "Rainfall Runoff",
         "Sanitation Coverage < 78%",
-        "Dissolved Oxygen < 5.0 mg/L"
+        "Dissolved Oxygen < 5.0 mg/L",
+        "TDS > 500 mg/L"
       ],
       "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
-      "validationAccuracy": 93.15,
-      "f1Score": 92.26
+      "grounding": "Bureau of Indian Standards BIS 10500 Drinking Water Guidelines",
+      "microdataStatus": "ACCESS_RESTRICTED (IHIP / MOHFW Institutional Credentials Required)"
     },
     "Hepatitis": {
       "diseaseName": "Hepatitis",
@@ -135,21 +140,17 @@
         "Turbidity > 5.0 NTU",
         "Rainfall Runoff",
         "Sanitation Coverage < 78%",
-        "Dissolved Oxygen < 5.0 mg/L"
+        "Dissolved Oxygen < 5.0 mg/L",
+        "TDS > 500 mg/L"
       ],
       "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
-      "validationAccuracy": 92.19,
-      "f1Score": 90.55
+      "grounding": "Bureau of Indian Standards BIS 10500 Drinking Water Guidelines",
+      "microdataStatus": "ACCESS_RESTRICTED (IHIP / MOHFW Institutional Credentials Required)"
     }
   },
   "timeSeriesMetrics": {
-    "mae": 34.55,
-    "rmse": 49.33,
-    "mape": 14.8,
-    "horizons": [
-      "7 Days",
-      "30 Days"
-    ],
-    "model": "Exponential Smoothing & Moving Average Decomposition"
+    "model": "Epidemiological Early Warning & Surveillance Projection",
+    "idspOutbreaksTracked": 8,
+    "continuousMicrodataNotice": "Continuous syndromic PHC records require institutional MOHFW / IHIP credentials."
   }
 }

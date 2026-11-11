@@ -13,3 +13,4 @@ for path in controllers:
         print(f"Updated CORS in: {path}")
 
 print(f"Total controllers updated: {count}")
+

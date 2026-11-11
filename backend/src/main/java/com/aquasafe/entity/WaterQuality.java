@@ -28,16 +28,16 @@ public class WaterQuality {
     @Column(nullable = false)
     private Double ph;
 
-    @Column(nullable = false)
+    @Column(name = "turbidity", nullable = true)
     private Double turbidity;
 
     @Column(nullable = false)
     private Double tds;
 
-    @Column(name = "dissolved_oxygen", nullable = false)
+    @Column(name = "dissolved_oxygen", nullable = true)
     private Double dissolvedOxygen;
 
-    @Column(name = "water_temperature", nullable = false)
+    @Column(name = "water_temperature", nullable = true)
     private Double waterTemperature;
 
     @Column(name = "created_at", updatable = false)

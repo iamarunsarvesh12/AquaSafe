@@ -208,16 +208,16 @@ public class WekaModelService {
             }
         }
 
-        instance.setValue(dataStructure.attribute("ph"), req.getPh());
-        instance.setValue(dataStructure.attribute("turbidity"), req.getTurbidity());
-        instance.setValue(dataStructure.attribute("tds"), req.getTds());
-        instance.setValue(dataStructure.attribute("dissolved_oxygen"), req.getDissolvedOxygen());
-        instance.setValue(dataStructure.attribute("temperature"), req.getTemperature());
-        instance.setValue(dataStructure.attribute("rainfall"), req.getRainfall());
-        instance.setValue(dataStructure.attribute("humidity"), req.getHumidity());
-        instance.setValue(dataStructure.attribute("previous_disease_cases"), req.getPreviousDiseaseCases());
-        instance.setValue(dataStructure.attribute("population_density"), req.getPopulationDensity());
-        instance.setValue(dataStructure.attribute("sanitation_coverage"), req.getSanitationCoverage());
+        setNumericOrMissing(instance, dataStructure.attribute("ph"), req.getPh());
+        setNumericOrMissing(instance, dataStructure.attribute("turbidity"), req.getTurbidity());
+        setNumericOrMissing(instance, dataStructure.attribute("tds"), req.getTds());
+        setNumericOrMissing(instance, dataStructure.attribute("dissolved_oxygen"), req.getDissolvedOxygen());
+        setNumericOrMissing(instance, dataStructure.attribute("temperature"), req.getTemperature());
+        setNumericOrMissing(instance, dataStructure.attribute("rainfall"), req.getRainfall());
+        setNumericOrMissing(instance, dataStructure.attribute("humidity"), req.getHumidity());
+        setNumericOrMissing(instance, dataStructure.attribute("previous_disease_cases"), req.getPreviousDiseaseCases() != null ? req.getPreviousDiseaseCases().doubleValue() : null);
+        setNumericOrMissing(instance, dataStructure.attribute("population_density"), req.getPopulationDensity() != null ? req.getPopulationDensity().doubleValue() : null);
+        setNumericOrMissing(instance, dataStructure.attribute("sanitation_coverage"), req.getSanitationCoverage());
 
         // Get actual class probability distribution
         double[] probs = classifier.distributionForInstance(instance);
@@ -306,6 +306,15 @@ public class WekaModelService {
 
     public boolean isModelLoaded() {
         return modelLoaded && classifier != null;
+    }
+
+    private void setNumericOrMissing(Instance inst, Attribute attr, Double val) {
+        if (attr == null) return;
+        if (val == null || Double.isNaN(val)) {
+            inst.setMissing(attr);
+        } else {
+            inst.setValue(attr, val);
+        }
     }
 
     private Instances buildFallbackInstancesHeader() {
