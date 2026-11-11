@@ -14,6 +14,12 @@ public class PredictionResponseDTO {
     private String message;
     private String disclaimer = "Prediction indicates estimated risk based on available project data. It is not a medical diagnosis or confirmation of an outbreak.";
 
+    // Disease-Specific Risk Estimates
+    private String predictedCholeraRisk = "LOW";
+    private String predictedTyphoidRisk = "LOW";
+    private String predictedDiarrheaRisk = "LOW";
+    private String predictedHepatitisRisk = "LOW";
+
     public PredictionResponseDTO() {}
 
     public PredictionResponseDTO(String district, String riskLevel, Double probability, LocalDateTime predictionDate, String modelVersion, Map<String, Double> classProbabilities, String message) {
@@ -49,4 +55,16 @@ public class PredictionResponseDTO {
 
     public String getDisclaimer() { return disclaimer; }
     public void setDisclaimer(String disclaimer) { this.disclaimer = disclaimer; }
+
+    public String getPredictedCholeraRisk() { return predictedCholeraRisk; }
+    public void setPredictedCholeraRisk(String predictedCholeraRisk) { this.predictedCholeraRisk = predictedCholeraRisk; }
+
+    public String getPredictedTyphoidRisk() { return predictedTyphoidRisk; }
+    public void setPredictedTyphoidRisk(String predictedTyphoidRisk) { this.predictedTyphoidRisk = predictedTyphoidRisk; }
+
+    public String getPredictedDiarrheaRisk() { return predictedDiarrheaRisk; }
+    public void setPredictedDiarrheaRisk(String predictedDiarrheaRisk) { this.predictedDiarrheaRisk = predictedDiarrheaRisk; }
+
+    public String getPredictedHepatitisRisk() { return predictedHepatitisRisk; }
+    public void setPredictedHepatitisRisk(String predictedHepatitisRisk) { this.predictedHepatitisRisk = predictedHepatitisRisk; }
 }

@@ -45,14 +45,21 @@
             <ul class="sidebar-menu">
                 <li class="menu-category">Analytics & Monitoring</li>
                 <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="districts.html"><i class="fa-solid fa-city"></i> District Intelligence</a></li>
                 <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
                 <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+                <li><a href="forecast.html"><i class="fa-solid fa-chart-line"></i> Disease Forecasting</a></li>
 
                 <li class="menu-category">Surveillance Data</li>
+                <li><a href="water-quality.html"><i class="fa-solid fa-droplet"></i> Water Quality</a></li>
+                <li><a href="weather.html"><i class="fa-solid fa-cloud-sun-rain"></i> Weather Analytics</a></li>
+                <li><a href="disease.html"><i class="fa-solid fa-virus-covid"></i> Disease Surveillance</a></li>
+                <li><a href="spark.html"><i class="fa-solid fa-network-wired"></i> Big Data & Spark</a></li>
                 <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
-                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
-                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Evaluation</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts <span id="sidebarAlertBadge" class="badge bg-danger ms-auto">!</span></a></li>
                 <li><a href="reports.html" class="active"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+                <li><a href="users.html"><i class="fa-solid fa-users-gear"></i> User Management</a></li>
 
                 <li class="menu-category">System</li>
                 <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
@@ -202,7 +209,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/api.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDistrictsDropdown();
             loadReportData();
 
             document.getElementById('reportFilterForm').addEventListener('submit', (e) => {
@@ -210,6 +218,26 @@
                 loadReportData();
             });
         });
+
+        async function loadDistrictsDropdown() {
+            try {
+                const districts = await api.getDistricts();
+                if (districts && districts.length > 0) {
+                    const sel = document.getElementById('filterDistrict');
+                    const curVal = sel.value;
+                    sel.innerHTML = '<option value="">All Districts (State-Wide)</option>';
+                    districts.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d.districtName;
+                        opt.textContent = d.districtName;
+                        sel.appendChild(opt);
+                    });
+                    if (curVal) sel.value = curVal;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
 
         async function loadReportData() {
             const district = document.getElementById('filterDistrict').value;

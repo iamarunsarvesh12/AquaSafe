@@ -1,0 +1,155 @@
+{
+  "modelName": "AquaSafe Multi-Model Intelligence Suite",
+  "evaluationDate": "2026-11-11T13:37:07.668937",
+  "totalRecords": 2698,
+  "trainRecords": 1824,
+  "testRecords": 874,
+  "targetDistrictsCount": 38,
+  "algorithms": {
+    "Random Forest": {
+      "accuracy": 96.8,
+      "precision": 96.82,
+      "recall": 96.8,
+      "f1Score": 96.72,
+      "rocAuc": 0.9955,
+      "confusionMatrix": [
+        [
+          180,
+          0,
+          1
+        ],
+        [
+          0,
+          526,
+          3
+        ],
+        [
+          2,
+          22,
+          140
+        ]
+      ]
+    },
+    "Gradient Boosting": {
+      "accuracy": 97.94,
+      "precision": 97.94,
+      "recall": 97.94,
+      "f1Score": 97.92,
+      "rocAuc": 0.9981,
+      "confusionMatrix": [
+        [
+          179,
+          0,
+          2
+        ],
+        [
+          0,
+          527,
+          2
+        ],
+        [
+          1,
+          13,
+          150
+        ]
+      ]
+    },
+    "Extra Trees": {
+      "accuracy": 91.3,
+      "precision": 91.02,
+      "recall": 91.3,
+      "f1Score": 90.84,
+      "rocAuc": 0.9799,
+      "confusionMatrix": [
+        [
+          173,
+          1,
+          7
+        ],
+        [
+          0,
+          518,
+          11
+        ],
+        [
+          11,
+          46,
+          107
+        ]
+      ]
+    }
+  },
+  "bestAlgorithm": "Gradient Boosting",
+  "featureImportances": {
+    "ph": 2.38,
+    "turbidity": 25.59,
+    "tds": 3.34,
+    "dissolved_oxygen": 13.18,
+    "temperature": 3.18,
+    "rainfall": 18.94,
+    "humidity": 7.12,
+    "previous_disease_cases": 10.46,
+    "population_density": 3.29,
+    "sanitation_coverage": 12.51
+  },
+  "diseaseSpecificModels": {
+    "Cholera": {
+      "diseaseName": "Cholera",
+      "primaryTriggers": [
+        "Turbidity > 5.0 NTU",
+        "Rainfall Runoff",
+        "Sanitation Coverage < 78%",
+        "Dissolved Oxygen < 5.0 mg/L"
+      ],
+      "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
+      "validationAccuracy": 91.32,
+      "f1Score": 91.04
+    },
+    "Typhoid": {
+      "diseaseName": "Typhoid",
+      "primaryTriggers": [
+        "Turbidity > 5.0 NTU",
+        "Rainfall Runoff",
+        "Sanitation Coverage < 78%",
+        "Dissolved Oxygen < 5.0 mg/L"
+      ],
+      "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
+      "validationAccuracy": 91.65,
+      "f1Score": 92.39
+    },
+    "Acute Diarrhoeal Disease": {
+      "diseaseName": "Acute Diarrhoeal Disease",
+      "primaryTriggers": [
+        "Turbidity > 5.0 NTU",
+        "Rainfall Runoff",
+        "Sanitation Coverage < 78%",
+        "Dissolved Oxygen < 5.0 mg/L"
+      ],
+      "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
+      "validationAccuracy": 93.15,
+      "f1Score": 92.26
+    },
+    "Hepatitis": {
+      "diseaseName": "Hepatitis",
+      "primaryTriggers": [
+        "Turbidity > 5.0 NTU",
+        "Rainfall Runoff",
+        "Sanitation Coverage < 78%",
+        "Dissolved Oxygen < 5.0 mg/L"
+      ],
+      "modelType": "Multi-Factor Epidemiological Logistic Risk Estimator",
+      "validationAccuracy": 92.19,
+      "f1Score": 90.55
+    }
+  },
+  "timeSeriesMetrics": {
+    "mae": 34.55,
+    "rmse": 49.33,
+    "mape": 14.8,
+    "horizons": [
+      "7 Days",
+      "30 Days"
+    ],
+    "model": "Exponential Smoothing & Moving Average Decomposition"
+  }
+}

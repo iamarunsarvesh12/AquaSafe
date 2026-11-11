@@ -34,14 +34,21 @@
             <ul class="sidebar-menu">
                 <li class="menu-category">Analytics & Monitoring</li>
                 <li><a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="districts.html"><i class="fa-solid fa-city"></i> District Intelligence</a></li>
                 <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
                 <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+                <li><a href="forecast.html"><i class="fa-solid fa-chart-line"></i> Disease Forecasting</a></li>
 
                 <li class="menu-category">Surveillance Data</li>
+                <li><a href="water-quality.html"><i class="fa-solid fa-droplet"></i> Water Quality</a></li>
+                <li><a href="weather.html"><i class="fa-solid fa-cloud-sun-rain"></i> Weather Analytics</a></li>
+                <li><a href="disease.html"><i class="fa-solid fa-virus-covid"></i> Disease Surveillance</a></li>
+                <li><a href="spark.html"><i class="fa-solid fa-network-wired"></i> Big Data & Spark</a></li>
                 <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
-                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
-                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts <span id="sidebarAlertBadge" class="badge bg-danger ms-auto">2</span></a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Evaluation</a></li>
+                <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i> Alerts <span id="sidebarAlertBadge" class="badge bg-danger ms-auto">!</span></a></li>
                 <li><a href="reports.html"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+                <li><a href="users.html"><i class="fa-solid fa-users-gear"></i> User Management</a></li>
 
                 <li class="menu-category">System</li>
                 <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
@@ -76,6 +83,11 @@
                         <span id="dataFreshnessText">STORED DATA</span>
                     </div>
 
+                    <!-- Live Sync Button -->
+                    <button class="btn btn-sm btn-outline-primary" id="btnRefreshLiveData" onclick="manualSyncLiveData()">
+                        <i class="fa-solid fa-arrows-rotate me-1" id="syncSpinIcon"></i> Refresh Live Data
+                    </button>
+
                     <!-- Last Updated -->
                     <div class="text-muted small d-none d-md-block">
                         <i class="fa-regular fa-clock me-1"></i> Last Updated: <span id="lastUpdatedTimestamp" class="fw-semibold text-dark">--:--:--</span>
@@ -93,6 +105,18 @@
 
             <!-- Content Body -->
             <main class="content-body">
+                <!-- DHO Jurisdiction Notice Banner (Shown for District Health Officers) -->
+                <div id="dhoJurisdictionBanner" style="display: none;"></div>
+
+                <!-- Live Sync Telemetry Banner -->
+                <div class="alert alert-light border py-2 px-3 small d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2" id="syncConnectionBadge">ONLINE</span>
+                        <span id="liveSyncStatusText" class="text-muted">Open-Meteo Weather API: Connected | Automatic periodic synchronization active (38 districts)</span>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary border">38 Districts Monitored</span>
+                </div>
+
                 <!-- KPI Cards Row -->
                 <div class="row g-3 mb-4">
                     <div class="col-sm-6 col-xl-2">

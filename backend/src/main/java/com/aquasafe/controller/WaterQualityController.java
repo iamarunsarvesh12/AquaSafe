@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/water-quality")
+@CrossOrigin(originPatterns = "*")
 public class WaterQualityController {
 
     private final WaterQualityService waterQualityService;
@@ -24,6 +26,16 @@ public class WaterQualityController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int size) {
         return ResponseEntity.ok(waterQualityService.getRecords(district, page, size));
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<Map<String, Object>> getComprehensiveAnalytics() {
+        return ResponseEntity.ok(waterQualityService.getComprehensiveAnalytics());
+    }
+
+    @GetMapping("/violations")
+    public ResponseEntity<List<Map<String, Object>>> getStandardsViolations() {
+        return ResponseEntity.ok(waterQualityService.getStandardsViolations());
     }
 
     @GetMapping("/averages")

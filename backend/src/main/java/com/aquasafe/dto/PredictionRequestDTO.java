@@ -52,6 +52,22 @@ public class PredictionRequestDTO {
 
     public PredictionRequestDTO() {}
 
+    public PredictionRequestDTO(String district, Double ph, Double turbidity, Double tds, Double dissolvedOxygen,
+                              Double temperature, Double rainfall, Double humidity, Integer previousDiseaseCases,
+                              Integer populationDensity, Double sanitationCoverage) {
+        this.district = district;
+        this.ph = ph;
+        this.turbidity = turbidity;
+        this.tds = tds;
+        this.dissolvedOxygen = dissolvedOxygen;
+        this.temperature = temperature;
+        this.rainfall = rainfall;
+        this.humidity = humidity;
+        this.previousDiseaseCases = previousDiseaseCases;
+        this.populationDensity = populationDensity;
+        this.sanitationCoverage = sanitationCoverage;
+    }
+
     public String getDistrict() { return district; }
     public void setDistrict(String district) { this.district = district; }
 

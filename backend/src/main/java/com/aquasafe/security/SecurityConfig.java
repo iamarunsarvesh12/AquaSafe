@@ -45,6 +45,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors(org.springframework.security.config.Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .headers(headers -> headers.frameOptions(frame -> frame.disable())) // allow H2 console / iframes
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
@@ -54,6 +55,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/index.html", "/dashboard.html", "/prediction.html", "/data.html",
                     "/map.html", "/model.html", "/alerts.html", "/reports.html", "/login.html",
+                    "/disease.html", "/districts.html", "/forecast.html", "/spark.html",
+                    "/users.html", "/water-quality.html", "/weather.html",
                     "/css/**", "/js/**", "/favicon.ico", "/h2-console/**"
                 ).permitAll()
                 // Allow authentication and public endpoints

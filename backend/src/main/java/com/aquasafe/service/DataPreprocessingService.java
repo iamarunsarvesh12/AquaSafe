@@ -207,9 +207,10 @@ public class DataPreprocessingService {
                 file = new File(filePath);
             }
             file.getParentFile().mkdirs();
+            String districtListStr = String.join(",", com.aquasafe.ml.WekaModelService.ALL_38_DISTRICTS);
             try (FileWriter fw = new FileWriter(file)) {
                 fw.write("@relation aquasafe_disease_risk\n\n");
-                fw.write("@attribute district {Chennai,Madurai,Coimbatore,Tiruchirappalli,Salem,Tirunelveli,Thanjavur,Vellore,Erode,Kanyakumari}\n");
+                fw.write("@attribute district {" + districtListStr + "}\n");
                 fw.write("@attribute ph numeric\n");
                 fw.write("@attribute turbidity numeric\n");
                 fw.write("@attribute tds numeric\n");

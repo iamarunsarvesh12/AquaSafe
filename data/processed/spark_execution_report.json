@@ -1,0 +1,249 @@
+{
+  "jobName": "AquaSafe-Distributed-Analytics-Job",
+  "sparkMaster": "local[*]",
+  "sparkVersion": "4.2.0",
+  "inputRecords": 8094,
+  "processedRecords": 2698,
+  "rejectedRecords": 0,
+  "partitionsCount": 1,
+  "durationMs": 28094,
+  "datasetSizeBytes": 3355869,
+  "parquetPath": "data/processed\\parquet\\tamilnadu_epidemiological_analytics.parquet",
+  "status": "SUCCESS",
+  "timestamp": "2026-11-11T13:34:54.321721",
+  "districtCount": 38,
+  "topDistricts": [
+    {
+      "district": "Chennai",
+      "avgPh": 7.17,
+      "avgTurbidity": 6.31,
+      "avgTds": 754.5,
+      "avgDo": 5.68,
+      "totalRainfall": 5721.0,
+      "totalCases": 27557,
+      "avgIncidenceRate": 4.93,
+      "avgWqi": 67.9
+    },
+    {
+      "district": "Salem",
+      "avgPh": 7.25,
+      "avgTurbidity": 7.08,
+      "avgTds": 470.3,
+      "avgDo": 5.42,
+      "totalRainfall": 5421.6,
+      "totalCases": 14818,
+      "avgIncidenceRate": 5.11,
+      "avgWqi": 61.12
+    },
+    {
+      "district": "Coimbatore",
+      "avgPh": 7.12,
+      "avgTurbidity": 7.34,
+      "avgTds": 428.4,
+      "avgDo": 5.4,
+      "totalRainfall": 7341.8,
+      "totalCases": 11459,
+      "avgIncidenceRate": 3.78,
+      "avgWqi": 61.65
+    },
+    {
+      "district": "Tiruvannamalai",
+      "avgPh": 7.19,
+      "avgTurbidity": 7.85,
+      "avgTds": 489.8,
+      "avgDo": 5.28,
+      "totalRainfall": 5753.6,
+      "totalCases": 11417,
+      "avgIncidenceRate": 5.68,
+      "avgWqi": 66.72
+    },
+    {
+      "district": "Cuddalore",
+      "avgPh": 7.24,
+      "avgTurbidity": 7.29,
+      "avgTds": 480.3,
+      "avgDo": 5.45,
+      "totalRainfall": 5461.2,
+      "totalCases": 10822,
+      "avgIncidenceRate": 5.15,
+      "avgWqi": 62.78
+    },
+    {
+      "district": "Tiruvallur",
+      "avgPh": 7.26,
+      "avgTurbidity": 6.74,
+      "avgTds": 447.7,
+      "avgDo": 5.45,
+      "totalRainfall": 6166.5,
+      "totalCases": 10792,
+      "avgIncidenceRate": 2.96,
+      "avgWqi": 59.06
+    },
+    {
+      "district": "Thanjavur",
+      "avgPh": 7.16,
+      "avgTurbidity": 7.41,
+      "avgTds": 486.4,
+      "avgDo": 5.37,
+      "totalRainfall": 5561.5,
+      "totalCases": 10355,
+      "avgIncidenceRate": 5.41,
+      "avgWqi": 63.68
+    },
+    {
+      "district": "Viluppuram",
+      "avgPh": 7.21,
+      "avgTurbidity": 8.19,
+      "avgTds": 506.5,
+      "avgDo": 5.28,
+      "totalRainfall": 5964.9,
+      "totalCases": 10202,
+      "avgIncidenceRate": 5.93,
+      "avgWqi": 69.9
+    },
+    {
+      "district": "Tiruppur",
+      "avgPh": 7.15,
+      "avgTurbidity": 7.12,
+      "avgTds": 427.7,
+      "avgDo": 5.43,
+      "totalRainfall": 6851.3,
+      "totalCases": 8790,
+      "avgIncidenceRate": 3.73,
+      "avgWqi": 60.28
+    },
+    {
+      "district": "Krishnagiri",
+      "avgPh": 7.22,
+      "avgTurbidity": 6.65,
+      "avgTds": 479.5,
+      "avgDo": 5.44,
+      "totalRainfall": 4914.3,
+      "totalCases": 8286,
+      "avgIncidenceRate": 5.08,
+      "avgWqi": 59.1
+    }
+  ],
+  "monthlyTrends": [
+    {
+      "yearMonth": "2025-12",
+      "cholera": 172,
+      "typhoid": 743,
+      "diarrhea": 4918,
+      "hepatitis": 440,
+      "totalCases": 6273,
+      "avgRainfall": 184.7,
+      "avgWqi": 80.52
+    },
+    {
+      "yearMonth": "2026-01",
+      "cholera": 32,
+      "typhoid": 300,
+      "diarrhea": 1957,
+      "hepatitis": 169,
+      "totalCases": 2458,
+      "avgRainfall": 27.9,
+      "avgWqi": 50.67
+    },
+    {
+      "yearMonth": "2026-02",
+      "cholera": 26,
+      "typhoid": 243,
+      "diarrhea": 1768,
+      "hepatitis": 160,
+      "totalCases": 2197,
+      "avgRainfall": 28.4,
+      "avgWqi": 49.54
+    },
+    {
+      "yearMonth": "2026-03",
+      "cholera": 32,
+      "typhoid": 270,
+      "diarrhea": 1884,
+      "hepatitis": 157,
+      "totalCases": 2343,
+      "avgRainfall": 33.3,
+      "avgWqi": 51.76
+    },
+    {
+      "yearMonth": "2026-04",
+      "cholera": 31,
+      "typhoid": 298,
+      "diarrhea": 1941,
+      "hepatitis": 176,
+      "totalCases": 2446,
+      "avgRainfall": 32.2,
+      "avgWqi": 51.73
+    },
+    {
+      "yearMonth": "2026-05",
+      "cholera": 37,
+      "typhoid": 321,
+      "diarrhea": 2094,
+      "hepatitis": 185,
+      "totalCases": 2637,
+      "avgRainfall": 33.6,
+      "avgWqi": 51.52
+    },
+    {
+      "yearMonth": "2026-06",
+      "cholera": 109,
+      "typhoid": 533,
+      "diarrhea": 3622,
+      "hepatitis": 316,
+      "totalCases": 4580,
+      "avgRainfall": 72.7,
+      "avgWqi": 63.02
+    },
+    {
+      "yearMonth": "2026-07",
+      "cholera": 96,
+      "typhoid": 556,
+      "diarrhea": 3689,
+      "hepatitis": 325,
+      "totalCases": 4666,
+      "avgRainfall": 78.9,
+      "avgWqi": 63.05
+    },
+    {
+      "yearMonth": "2026-08",
+      "cholera": 96,
+      "typhoid": 534,
+      "diarrhea": 3585,
+      "hepatitis": 313,
+      "totalCases": 4528,
+      "avgRainfall": 79.5,
+      "avgWqi": 61.63
+    },
+    {
+      "yearMonth": "2026-09",
+      "cholera": 83,
+      "typhoid": 489,
+      "diarrhea": 3183,
+      "hepatitis": 286,
+      "totalCases": 4041,
+      "avgRainfall": 77.5,
+      "avgWqi": 60.23
+    },
+    {
+      "yearMonth": "2026-10",
+      "cholera": 184,
+      "typhoid": 787,
+      "diarrhea": 5111,
+      "hepatitis": 447,
+      "totalCases": 6529,
+      "avgRainfall": 179.1,
+      "avgWqi": 86.5
+    },
+    {
+      "yearMonth": "2026-11",
+      "cholera": 176,
+      "typhoid": 754,
+      "diarrhea": 5094,
+      "hepatitis": 440,
+      "totalCases": 6464,
+      "avgRainfall": 179.9,
+      "avgWqi": 84.65
+    }
+  ]
+}

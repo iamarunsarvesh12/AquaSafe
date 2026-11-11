@@ -51,6 +51,22 @@ public class PredictionResult {
     @Column(name = "sanitation_coverage")
     private Double sanitationCoverage;
 
+    // Disease Specific Risks
+    @Column(name = "predicted_cholera_risk", length = 20)
+    private String predictedCholeraRisk = "LOW";
+
+    @Column(name = "predicted_typhoid_risk", length = 20)
+    private String predictedTyphoidRisk = "LOW";
+
+    @Column(name = "predicted_diarrhea_risk", length = 20)
+    private String predictedDiarrheaRisk = "LOW";
+
+    @Column(name = "predicted_hepatitis_risk", length = 20)
+    private String predictedHepatitisRisk = "LOW";
+
+    @Column(name = "advisory_message", columnDefinition = "TEXT")
+    private String advisoryMessage;
+
     public PredictionResult() {}
 
     public PredictionResult(String district, String riskLevel, Double probability, String modelVersion) {
@@ -108,4 +124,19 @@ public class PredictionResult {
 
     public Double getSanitationCoverage() { return sanitationCoverage; }
     public void setSanitationCoverage(Double sanitationCoverage) { this.sanitationCoverage = sanitationCoverage; }
+
+    public String getPredictedCholeraRisk() { return predictedCholeraRisk; }
+    public void setPredictedCholeraRisk(String predictedCholeraRisk) { this.predictedCholeraRisk = predictedCholeraRisk; }
+
+    public String getPredictedTyphoidRisk() { return predictedTyphoidRisk; }
+    public void setPredictedTyphoidRisk(String predictedTyphoidRisk) { this.predictedTyphoidRisk = predictedTyphoidRisk; }
+
+    public String getPredictedDiarrheaRisk() { return predictedDiarrheaRisk; }
+    public void setPredictedDiarrheaRisk(String predictedDiarrheaRisk) { this.predictedDiarrheaRisk = predictedDiarrheaRisk; }
+
+    public String getPredictedHepatitisRisk() { return predictedHepatitisRisk; }
+    public void setPredictedHepatitisRisk(String predictedHepatitisRisk) { this.predictedHepatitisRisk = predictedHepatitisRisk; }
+
+    public String getAdvisoryMessage() { return advisoryMessage; }
+    public void setAdvisoryMessage(String advisoryMessage) { this.advisoryMessage = advisoryMessage; }
 }

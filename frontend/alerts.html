@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar Navigation -->
@@ -28,14 +30,22 @@
             <ul class="sidebar-menu">
                 <li class="menu-category">Analytics & Monitoring</li>
                 <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="districts.html"><i class="fa-solid fa-city"></i> District Intelligence</a></li>
                 <li><a href="map.html"><i class="fa-solid fa-map-location-dot"></i> Risk Map</a></li>
                 <li><a href="prediction.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Risk Prediction</a></li>
+                <li><a href="forecast.html"><i class="fa-solid fa-chart-line"></i> Disease Forecasting</a></li>
 
                 <li class="menu-category">Surveillance Data</li>
+                <li><a href="water-quality.html"><i class="fa-solid fa-droplet"></i> Water Quality</a></li>
+                <li><a href="weather.html"><i class="fa-solid fa-cloud-sun-rain"></i> Weather Analytics</a></li>
+                <li><a href="disease.html"><i class="fa-solid fa-virus-covid"></i> Disease Surveillance</a></li>
+                <li><a href="spark.html"><i class="fa-solid fa-network-wired"></i> Big Data & Spark</a></li>
                 <li><a href="data.html"><i class="fa-solid fa-database"></i> Data Management</a></li>
-                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Performance</a></li>
-                <li><a href="alerts.html" class="active"><i class="fa-solid fa-triangle-exclamation"></i> Alerts</a></li>
+                <li><a href="model.html"><i class="fa-solid fa-brain"></i> Model Evaluation</a></li>
+                <li><a href="alerts.html" class="active"><i class="fa-solid fa-triangle-exclamation"></i> Alerts <span
+                            id="sidebarAlertBadge" class="badge bg-danger ms-auto">!</span></a></li>
                 <li><a href="reports.html"><i class="fa-solid fa-file-waveform"></i> Reports</a></li>
+                <li><a href="users.html"><i class="fa-solid fa-users-gear"></i> User Management</a></li>
 
                 <li class="menu-category">System</li>
                 <li><a href="login.html"><i class="fa-solid fa-right-from-bracket"></i> Logout / Login</a></li>
@@ -64,7 +74,9 @@
                         </div>
                         <div>
                             <h6 class="fw-bold mb-1 text-danger">High-Risk Condition Trigger Protocol</h6>
-                            <p class="small text-muted mb-0">Whenever environmental contamination metrics exceed public safety thresholds, or the Weka ML classifier predicts a HIGH risk level (Probability &ge; 70%), an automated surveillance alert is generated immediately.</p>
+                            <p class="small text-muted mb-0">Whenever environmental contamination metrics exceed public
+                                safety thresholds, or the Weka ML classifier predicts a HIGH risk level (Probability
+                                &ge; 70%), an automated surveillance alert is generated immediately.</p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +101,9 @@
                                 </tr>
                             </thead>
                             <tbody id="alertsTableBody">
-                                <tr><td colspan="7" class="text-center text-muted py-4">Loading active alerts...</td></tr>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">Loading active alerts...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -98,7 +112,9 @@
                 <div class="disclaimer-box mt-3">
                     <i class="fa-solid fa-circle-info text-primary mt-1"></i>
                     <div>
-                        <strong>Notice:</strong> Alerts signify "Predicted high-risk conditions" indicating statistical likelihood based on sensor data and historical indicators. They are not confirmations of outbreaks or clinical medical diagnoses.
+                        <strong>Notice:</strong> Alerts signify "Predicted high-risk conditions" indicating statistical
+                        likelihood based on sensor data and historical indicators. They are not confirmations of
+                        outbreaks or clinical medical diagnoses.
                     </div>
                 </div>
             </main>
@@ -109,4 +125,5 @@
     <script src="js/api.js"></script>
     <script src="js/alerts.js"></script>
 </body>
+
 </html>

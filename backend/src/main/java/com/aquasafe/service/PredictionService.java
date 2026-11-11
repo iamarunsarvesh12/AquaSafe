@@ -54,6 +54,11 @@ public class PredictionService {
         entity.setPreviousDiseaseCases(req.getPreviousDiseaseCases());
         entity.setPopulationDensity(req.getPopulationDensity());
         entity.setSanitationCoverage(req.getSanitationCoverage());
+        entity.setPredictedCholeraRisk(response.getPredictedCholeraRisk());
+        entity.setPredictedTyphoidRisk(response.getPredictedTyphoidRisk());
+        entity.setPredictedDiarrheaRisk(response.getPredictedDiarrheaRisk());
+        entity.setPredictedHepatitisRisk(response.getPredictedHepatitisRisk());
+        entity.setAdvisoryMessage(response.getMessage());
 
         predictionRepository.save(entity);
 

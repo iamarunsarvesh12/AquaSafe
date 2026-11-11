@@ -1,13 +1,16 @@
 /**
  * AquaSafe Interactive Risk Map Controller
- * Powered by Leaflet.js focused on Tamil Nadu districts
+ * Powered by Leaflet.js covering all 38 Tamil Nadu districts with disease filters
  */
 
 let mapInstance = null;
 let markersLayer = null;
+let allDistrictsData = [];
+let allPredictionsMap = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
     initRiskMap();
+    setupDiseaseFilter();
     await loadMapData();
 });
 
@@ -15,7 +18,7 @@ function initRiskMap() {
     const mapContainer = document.getElementById('riskMap');
     if (!mapContainer) return;
 
-    // Centered on Tamil Nadu, India (Coordinates: 11.0, 78.5)
+    // Centered on Tamil Nadu, India
     mapInstance = L.map('riskMap', {
         center: [11.1271, 78.6569],
         zoom: 7,
@@ -23,9 +26,8 @@ function initRiskMap() {
         maxZoom: 12
     });
 
-    // Clean OpenStreetMap Tile Layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | AquaSafe Intelligence'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | AquaSafe Surveillance'
     }).addTo(mapInstance);
 
     markersLayer = L.layerGroup().addTo(mapInstance);
@@ -33,84 +35,95 @@ function initRiskMap() {
     // Map Legend Control
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
-        const div = L.DomUtil.create('div', 'map-legend');
+        const div = L.DomUtil.create('div', 'map-legend p-2 bg-white rounded shadow-sm');
         div.innerHTML = `
-            <div class="fw-bold mb-1 small text-dark">Estimated Risk Level</div>
-            <div><span class="legend-dot" style="background:#ef4444;"></span> High Risk Condition</div>
-            <div><span class="legend-dot" style="background:#f59e0b;"></span> Moderate Risk</div>
-            <div><span class="legend-dot" style="background:#10b981;"></span> Low Risk Nominal</div>
+            <div class="fw-bold mb-1 small text-dark">Disease Risk Level</div>
+            <div><span class="legend-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;margin-right:5px;"></span> High Risk Condition</div>
+            <div><span class="legend-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-right:5px;"></span> Moderate Risk</div>
+            <div><span class="legend-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;margin-right:5px;"></span> Low Risk Nominal</div>
         `;
         return div;
     };
     legend.addTo(mapInstance);
 }
 
+function setupDiseaseFilter() {
+    const filterSelect = document.getElementById('diseaseMapFilter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', () => {
+            renderDistrictMarkers(allDistrictsData, allPredictionsMap, filterSelect.value);
+        });
+    }
+}
+
 async function loadMapData() {
     try {
-        // Fetch population & coordinates data
-        const districts = await api.getPopulation();
-        // Fetch latest prediction per district
-        const summary = await api.getDashboardSummary();
-        const predictions = await api.getPredictionHistory();
+        let districts = await api.getDistricts();
+        if (!districts || districts.length === 0) {
+            districts = await api.getPopulation();
+        }
+        allDistrictsData = districts || [];
 
-        // Build a lookup map of district -> latest prediction
-        const predMap = {};
+        const predictions = await api.getPredictionHistory();
+        allPredictionsMap = {};
         if (predictions && predictions.length > 0) {
             predictions.forEach(p => {
-                if (!predMap[p.district.toLowerCase()]) {
-                    predMap[p.district.toLowerCase()] = p;
+                const key = p.district.toLowerCase();
+                if (!allPredictionsMap[key]) {
+                    allPredictionsMap[key] = p;
                 }
             });
         }
 
-        renderDistrictMarkers(districts, predMap);
+        renderDistrictMarkers(allDistrictsData, allPredictionsMap, 'ALL');
+        populateDistrictCards(allDistrictsData, allPredictionsMap);
     } catch (err) {
         console.error('Failed to load map data:', err);
     }
 }
 
-function renderDistrictMarkers(districts, predMap) {
+function renderDistrictMarkers(districts, predMap, diseaseFilter = 'ALL') {
     if (!markersLayer) return;
     markersLayer.clearLayers();
 
-    // Fallback baseline risk if prediction not yet in history
-    const baselineRisks = {
-        'salem': { riskLevel: 'HIGH', probability: 0.842 },
-        'thanjavur': { riskLevel: 'HIGH', probability: 0.793 },
-        'chennai': { riskLevel: 'MEDIUM', probability: 0.684 },
-        'tiruchirappalli': { riskLevel: 'MEDIUM', probability: 0.621 },
-        'vellore': { riskLevel: 'MEDIUM', probability: 0.651 },
-        'madurai': { riskLevel: 'LOW', probability: 0.812 },
-        'coimbatore': { riskLevel: 'LOW', probability: 0.895 },
-        'tirunelveli': { riskLevel: 'LOW', probability: 0.778 },
-        'erode': { riskLevel: 'LOW', probability: 0.835 },
-        'kanyakumari': { riskLevel: 'LOW', probability: 0.912 }
-    };
-
     districts.forEach(d => {
-        const key = d.district.toLowerCase();
-        const pred = predMap[key] || baselineRisks[key] || { riskLevel: 'LOW', probability: 0.75 };
+        const distName = d.districtName || d.district;
+        const key = distName.toLowerCase();
+        const pred = predMap[key] || { riskLevel: 'LOW', probability: 0.75 };
 
-        const risk = pred.riskLevel || 'LOW';
-        const prob = ((pred.probability || 0.75) * 100).toFixed(1);
+        let risk = pred.riskLevel || 'LOW';
+        let prob = ((pred.probability || 0.75) * 100).toFixed(1);
+
+        // Adjust risk if filtered by disease
+        if (diseaseFilter === 'CHOLERA' && pred.predictedCholeraRisk) {
+            risk = pred.predictedCholeraRisk;
+        } else if (diseaseFilter === 'TYPHOID' && pred.predictedTyphoidRisk) {
+            risk = pred.predictedTyphoidRisk;
+        } else if (diseaseFilter === 'DIARRHEA' && pred.predictedDiarrheaRisk) {
+            risk = pred.predictedDiarrheaRisk;
+        } else if (diseaseFilter === 'HEPATITIS' && pred.predictedHepatitisRisk) {
+            risk = pred.predictedHepatitisRisk;
+        }
 
         let color = '#10b981';
-        let fillColor = '#ecfdf5';
         let badgeClass = 'bg-success';
 
         if (risk === 'HIGH') {
             color = '#ef4444';
-            fillColor = '#fee2e2';
             badgeClass = 'bg-danger';
         } else if (risk === 'MEDIUM') {
             color = '#f59e0b';
-            fillColor = '#fef3c7';
             badgeClass = 'bg-warning text-dark';
         }
 
+        const lat = d.latitude;
+        const lon = d.longitude;
+
+        if (!lat || !lon) return;
+
         // Draw interactive circle marker
-        const circle = L.circleMarker([d.latitude, d.longitude], {
-            radius: risk === 'HIGH' ? 14 : 11,
+        const circle = L.circleMarker([lat, lon], {
+            radius: risk === 'HIGH' ? 13 : 9,
             fillColor: color,
             color: '#ffffff',
             weight: 2,
@@ -118,10 +131,9 @@ function renderDistrictMarkers(districts, predMap) {
             fillOpacity: 0.85
         });
 
-        // Pulsing animation effect for HIGH risk districts
         if (risk === 'HIGH') {
-            const pulse = L.circleMarker([d.latitude, d.longitude], {
-                radius: 22,
+            L.circleMarker([lat, lon], {
+                radius: 20,
                 fillColor: '#ef4444',
                 color: '#ef4444',
                 weight: 1,
@@ -130,27 +142,62 @@ function renderDistrictMarkers(districts, predMap) {
             }).addTo(markersLayer);
         }
 
+        const popCount = d.population2025 || d.population || 0;
+        const sanitation = d.sanitationCoverage || 80.0;
+
         const popupContent = `
             <div style="min-width: 220px; font-family: 'Inter', sans-serif;">
                 <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-1">
-                    <strong style="font-size: 1.05rem; color: #0f172a;">${escapeHtml(d.district)}</strong>
+                    <strong style="font-size: 1.05rem; color: #0f172a;">${escapeHtml(distName)}</strong>
                     <span class="badge ${badgeClass}">${risk} RISK</span>
                 </div>
                 <div style="font-size: 0.82rem; color: #475569; line-height: 1.6;">
                     <div><strong>Estimated Probability:</strong> ${prob}%</div>
-                    <div><strong>Population:</strong> ${d.population.toLocaleString()}</div>
-                    <div><strong>Sanitation Coverage:</strong> ${d.sanitationCoverage}%</div>
-                    <div><strong>Coordinates:</strong> ${d.latitude.toFixed(4)}, ${d.longitude.toFixed(4)}</div>
-                    <div><strong>Last Updated:</strong> ${new Date().toLocaleDateString()}</div>
+                    <div><strong>Population (2025):</strong> ${popCount.toLocaleString()}</div>
+                    <div><strong>Sanitation Coverage:</strong> ${sanitation}%</div>
+                    <div><strong>Coordinates:</strong> ${lat.toFixed(4)}, ${lon.toFixed(4)}</div>
+                    <div><strong>Disease Focus:</strong> ${diseaseFilter}</div>
                 </div>
                 <div class="mt-2 pt-1 border-top" style="font-size: 0.72rem; color: #94a3b8;">
-                    Source: Public Health Demo Data
+                    Source: CGWB / IMD / IDSP Surveillance Feed
                 </div>
             </div>
         `;
 
         circle.bindPopup(popupContent);
         circle.addTo(markersLayer);
+    });
+}
+
+function populateDistrictCards(districts, predMap) {
+    const listEl = document.getElementById('mapDistrictList');
+    if (!listEl) return;
+
+    listEl.innerHTML = '';
+    districts.forEach(d => {
+        const distName = d.districtName || d.district;
+        const key = distName.toLowerCase();
+        const pred = predMap[key] || { riskLevel: 'LOW', probability: 0.75 };
+        const risk = pred.riskLevel || 'LOW';
+
+        let badgeClass = risk === 'HIGH' ? 'bg-danger' : (risk === 'MEDIUM' ? 'bg-warning text-dark' : 'bg-success');
+
+        const card = document.createElement('div');
+        card.className = 'p-2 mb-1 border rounded bg-white d-flex justify-content-between align-items-center cursor-pointer';
+        card.style.cursor = 'pointer';
+        card.innerHTML = `
+            <div>
+                <strong>${escapeHtml(distName)}</strong>
+                <div class="text-muted small">${(d.population2025 || d.population || 0).toLocaleString()} hab</div>
+            </div>
+            <span class="badge ${badgeClass}">${risk}</span>
+        `;
+        card.addEventListener('click', () => {
+            if (mapInstance && d.latitude && d.longitude) {
+                mapInstance.setView([d.latitude, d.longitude], 10);
+            }
+        });
+        listEl.appendChild(card);
     });
 }
 

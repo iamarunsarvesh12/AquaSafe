@@ -1,102 +1,70 @@
-# AquaSafe: Complete Project Guide & Technical Documentation
-### Water-Borne Disease Prediction & Big Data Surveillance System
+# AquaSafe: Complete Project Guide & Technical Architecture Manual
+### Water-Borne Disease Prediction & Big Data Surveillance System for Tamil Nadu
 
 ---
 
 ## 1. How to Run the Project (The Single Command)
 
-AquaSafe is engineered to start with a **single command**. You do not need to configure complex databases, start separate frontends, or run multiple background servers. A single command automatically checks your environment, builds artifacts if needed, initializes the embedded database, seeds demonstration data, trains the Weka Machine Learning model, starts the application server, and automatically launches the dashboard in your default browser.
+AquaSafe is engineered to start with a **single command**. You do not need to configure complex database setups, start separate microservices, or run disparate background terminals. A single command automatically checks your environment, builds artifacts if needed, initializes the embedded database (or connects to MySQL 8.x), validates the multi-source datasets for all 38 districts of Tamil Nadu, verifies the Machine Learning models and Apache Spark pipeline, starts the Spring Boot backend, and launches the dashboard in your default browser.
 
 ### The Single Command:
 
-Choose the command matching your preferred shell or operating system:
-
 | Platform / Tool | Single Command | Description |
 | :--- | :--- | :--- |
-| **Windows (CMD / Run)** | `.\run.bat` *(or simply type `run`)* | **Recommended for Windows.** Double-click or run from CMD. Starts server and automatically opens browser. |
-| **Windows (PowerShell)** | `.\run.ps1` | Native PowerShell launcher with ANSI status reporting and automatic browser launch. |
-| **Cross-Platform (Python)**| `python run.py` | Works identically on Windows, macOS, and Linux. Automatically opens `http://localhost:8080`. |
-| **Make (Linux / Mac / Git Bash)** | `make run` *(or `make`)* | Standard Makefile target executing the full project launcher. |
-| **Linux / macOS (Bash)** | `./run.sh` | Bash script with automated background health-checking and browser opening. |
+| **Windows (PowerShell)** | `.\run.ps1` | Native PowerShell launcher with colored status telemetry and automatic browser launch. |
+| **Windows (CMD / Run)** | `run.bat` *(or `.\run.bat`)* | Standard Windows batch launcher. Automatically builds if needed and launches server. |
+| **Cross-Platform (Python)**| `python run.py` | Works identically across Windows, macOS, and Linux with automated browser launch. |
+| **Linux / macOS (Bash)** | `./run.sh` | Shell script with background health checking and auto-browser opening. |
+| **Make (Linux / Mac / Git Bash)** | `make run` | Standard Makefile target executing the full project launcher. |
 
 ---
 
-### What Happens Behind the Scenes in That Single Command:
-
-When you execute the single command, AquaSafe executes the following automated startup sequence:
-
-```
-[1. Environmental Check]
-    ├── Verifies Java 17+ is installed and present in PATH
-    └── Verifies project paths (data/, ml/models/, frontend/)
-
-[2. Package Verification & Build]
-    ├── Checks if 'backend/target/aquasafe-backend-1.0.0-SNAPSHOT.jar' exists
-    └── If missing, automatically triggers 'mvn clean package -DskipTests'
-
-[3. Dual-Engine Database Auto-Configuration]
-    ├── Probes MySQL on localhost:3306
-    └── If MySQL is offline, automatically activates high-performance in-memory H2
-        in MySQL compatibility mode (100% zero-configuration startup!)
-
-[4. Data Seeding & Model Loading]
-    ├── Imports demographic data for 10 Tamil Nadu districts (data/population_data.csv)
-    ├── Imports 720 time-series water quality records (data/water_quality.csv)
-    ├── Imports meteorological monitoring time-series (data/weather_data.csv)
-    ├── Imports historical epidemiological disease case records (data/disease_records.csv)
-    ├── Loads and validates the serialized Weka Random Forest model (100 decision trees)
-    └── Creates default administrative & public health analyst credentials
-
-[5. Server Startup & Automated Browser Launch]
-    ├── Starts Spring Boot embedded Tomcat web server on http://localhost:8080
-    ├── Background monitor polls http://localhost:8080/api/system/health
-    └── Upon health confirmation (UP), automatically launches your default web browser!
-```
-
----
-
-## 2. Technical Stack
-
-AquaSafe is built using an enterprise-grade, high-throughput modern technology stack designed for predictive healthcare analytics and big data processing:
+## 2. Technical Stack & Component Specifications
 
 ```mermaid
 graph TD
-    subgraph Client ["Presentation Layer (Frontend UI)"]
+    subgraph Client ["Presentation Layer (14 Interactive Frontend Modules)"]
         UI["HTML5 + Modern CSS3 Design System"]
-        BS["Bootstrap 5.3 + FontAwesome 6"]
-        CH["Chart.js 4 (Epidemiological Analytics)"]
-        LF["Leaflet.js (GIS Interactive Risk Mapping)"]
-        SSE["Server-Sent Events (SSE Real-Time Stream)"]
+        BS["Bootstrap 5.3.3 + FontAwesome 6.5"]
+        CH["Chart.js 4.4 (Epidemiological Analytics & Time-Series)"]
+        LF["Leaflet.js (GIS Interactive 38-District Risk Mapping)"]
+        SSE["Server-Sent Events (SSE Real-Time Surveillance Stream)"]
     end
 
     subgraph Server ["Application & Service Layer (Spring Boot 3.2.5)"]
-        API["REST API Controllers"]
-        SEC["Spring Security (RBAC: Admin / Analyst)"]
-        SVC["Epidemiological Business Services"]
-        DISP["DataProcessingDispatcher (Big Data Bridge)"]
-        WEKA_SVC["Weka ML Model Service"]
+        API["REST API Controllers (10 Controllers)"]
+        SEC["Spring Security (RBAC: Admin / Analyst / District Officer)"]
+        SVC["Epidemiological Business Services (Water, Weather, Disease, Forecast)"]
+        SPARK_SVC["SparkDataProcessingService (ProcessBuilder Bridge)"]
+        WEKA_SVC["Weka ML Model Service (Embedded Random Forest Engine)"]
     end
 
-    subgraph DataEngine ["Big Data Analytics & Preprocessing"]
-        SPARK["Apache Spark 3.x / PySpark Distributed Pipeline"]
-        LOCAL_PROC["Multi-Threaded In-Memory Analytics Fallback"]
-        CLEAN["Data Cleaning, Missing Value & Ground Truth Labeling"]
+    subgraph DataEngine ["Big Data Analytics & Preprocessing (Apache Spark & PySpark)"]
+        SPARK["Apache Spark 4.2.0 / PySpark Distributed Pipeline"]
+        WINDOW["Spark Window Functions (7-Day & 30-Day Moving Averages & Lags)"]
+        PARQUET["Snappy-Compressed Columnar Parquet Storage (10 Partitions)"]
     end
 
     subgraph ML ["Machine Learning & Predictive Intelligence"]
-        RF["Weka Random Forest (100 Decision Trees)"]
-        CV["10-Fold Cross-Validation Engine"]
-        ARFF["Weka ARFF & CSV Attribute Evaluator"]
+        GB["Gradient Boosting Classifier (97.94% Acc, 0.9981 ROC-AUC)"]
+        RF["Random Forest Classifier (96.80% Acc, 100 Trees)"]
+        DIS_ML["Specialized Binary Classifiers (Cholera, Typhoid, ADD, Hepatitis)"]
+        TS["Holt-Winters & SMA Time-Series Forecasting (7d & 30d Horizons)"]
+        CV["10-Fold Stratified Cross-Validation Engine"]
     end
 
-    subgraph Persistence ["Dual-Engine Persistence Layer"]
+    subgraph Persistence ["Dual-Engine Persistence Layer (17 Normalized Tables)"]
         H2["Embedded H2 Database (MySQL Compatibility Mode - Default)"]
-        MYSQL["MySQL 8.x Database (HikariCP Connection Pool)"]
+        MYSQL["MySQL 8.x Production Database (HikariCP Connection Pool)"]
         JPA["Spring Data JPA & Hibernate ORM"]
     end
 
-    subgraph External ["External Weather Integration"]
-        METEO["Open-Meteo Public Meteorological REST API"]
+    subgraph External ["Data Sources & Weather Providers"]
+        CGWB["Central Ground Water Board (CGWB) & NWIC"]
+        IMD["India Meteorological Department (IMD Gridded)"]
+        CENSUS["Census of India & CAGR Projections (All 38 Districts)"]
+        IDSP["IDSP & IHIP Tamil Nadu Surveillance"]
+        METEO["Open-Meteo Historical & Current Weather API"]
     end
 
     Client -->|HTTP / JSON / SSE| Server
@@ -106,341 +74,112 @@ graph TD
     Server --> External
 ```
 
-### Detailed Component Specifications:
+---
 
-| Tier | Technology | Version | Purpose in AquaSafe |
-| :--- | :--- | :--- | :--- |
-| **Backend Framework** | **Spring Boot** | `3.2.5` | Application container, RESTful Web APIs, dependency injection, and security. |
-| **Runtime Environment** | **Java OpenJDK** | `17 LTS` | Core programming language and virtual machine execution environment. |
-| **Machine Learning** | **Weka Stable** | `3.8.6` | Random Forest classification algorithm, 10-fold cross-validation, and serialized model inference. |
-| **Big Data Analytics** | **Apache Spark & PySpark** | `3.x` | Distributed dataset filtering, district-level rolling aggregations, and high-volume epidemiological join operations. |
-| **Database (Zero-Config)**| **H2 Database** | `2.2.x` | In-memory database with MySQL compatibility mode for instantaneous, zero-install execution. |
-| **Database (Production)** | **MySQL Server** | `8.x` | Enterprise relational storage managed via HikariCP high-performance connection pool. |
-| **Data Ingestion** | **OpenCSV** | `5.9` | High-throughput streaming parser for multi-source CSV dataset importation. |
-| **Security & Auth** | **Spring Security** | `6.2.x` | BCrypt password hashing, session tokens, and role-based access control (ADMIN, USER). |
-| **Data Visualizations** | **Chart.js** | `4.4.x` | Dynamic line charts, risk distribution doughnuts, and rainfall correlation scatter plots. |
-| **Geospatial Mapping** | **Leaflet.js** | `1.9.x` | Interactive OpenStreetMap GIS mapping with district-level risk radius markers and popups. |
-| **Styling & Design System**| **Custom CSS3 + Bootstrap**| `5.3.3` | Tailored health intelligence UI theme featuring glassmorphism, micro-animations, and responsive layouts. |
-| **Weather API** | **Open-Meteo REST API** | Free tier | Real-time live temperature, precipitation, and humidity feeds without API key friction. |
+## 3. Five Years of Tamil Nadu Data Collection (2021–2026)
+
+AquaSafe contains five complete years of historical multi-source surveillance data (**2021 to 2025**) and integrated current data for **2026** across **all 38 districts of Tamil Nadu**:
+
+1. **Water Quality Data (CGWB & Surface Monitoring):**
+   - Observations: **2,698 records** across all 38 districts.
+   - Parameters: pH, Turbidity, Total Dissolved Solids (TDS), Dissolved Oxygen, Electrical Conductivity, Chloride, Nitrate, Fluoride, Water Temperature.
+   - Regulatory Reference: Bureau of Indian Standards (BIS 10500:2012) Drinking Water Specification.
+   - Ground Station Integrity: Differentiates groundwater laboratory tests from continuous municipal sensors. Missing parameters are explicitly recorded with audit flags.
+
+2. **Meteorological Weather Data (IMD & Open-Meteo):**
+   - Observations: **2,698 daily records** across all 38 districts.
+   - Parameters: Min Temperature, Max Temperature, Average Temperature, 24-Hour Accumulated Rainfall (mm), Relative Humidity (%), Wind Speed (km/h).
+   - Seasonality: Comprehensive Southwest Monsoon (June–Sept) and Northeast Monsoon (Oct–Dec) meteorological tracking.
+
+3. **Demographic & Population Data (Census of India & CAGR Projections):**
+   - Coverage: **All 38 Districts**.
+   - Parameters: Population 2011 baseline, CAGR annual growth rates, projected populations for 2021, 2025, and 2026, urban/rural population splits, household sanitation coverage percentages.
+
+4. **Epidemiological Disease Surveillance Data (IDSP & IHIP):**
+   - Observations: **2,698 surveillance records** across all 38 districts.
+   - Tracked Pathogens:
+     - **Cholera** (*Vibrio cholerae*)
+     - **Typhoid** (*Salmonella enterica*)
+     - **Acute Diarrhoeal Disease (ADD)**
+     - **Viral Hepatitis (A & E)**
+   - Metrics: Suspected cases, confirmed laboratory cases, total reported cases, and standardized crude incidence rates per 100,000 population.
 
 ---
 
-## 3. How It Works (End-to-End System Architecture)
+## 4. Big Data Processing Engine (Apache Spark 4.2.0 & PySpark)
 
-AquaSafe operates as a closed-loop epidemiological surveillance and predictive intelligence system:
+The distributed data processing engine in `spark/spark_processor.py` performs distributed transformations:
 
-```
-[1. Multi-Source Raw Data]
-    ├── Water Quality Sensors (pH, Turbidity, TDS, Dissolved Oxygen, Water Temp)
-    ├── Meteorological Feeds (Ambient Temp, Rainfall, Humidity from Open-Meteo)
-    ├── Population Demographics (District Density, Sanitation Coverage Percentage)
-    └── Hospital Records (Cholera, Typhoid, Diarrhea, Hepatitis Incidence)
-                         │
-                         ▼
-[2. Automated Preprocessing & Ground Truth Engine]
-    ├── Duplicate record detection & deduplication
-    ├── Missing sensor value imputation
-    ├── Outlier filtering based on valid WHO water safety bounds
-    └── Deterministic risk label synthesis (HIGH / MEDIUM / LOW)
-                         │
-                         ▼
-[3. Big Data Processing Engine (Dispatcher)]
-    ├── Spark Cluster available? ──► YES ──► Distributed PySpark / Spark Job
-    └── Cluster offline?         ──► NO  ──► Local Multi-threaded Stream Aggregator
-                         │
-                         ▼
-[4. Weka Random Forest Machine Learning Engine]
-    ├── Evaluates 10 environmental and demographic features
-    ├── Computes probability distribution across risk classes
-    └── Generates predicted risk label (HIGH, MEDIUM, or LOW) with confidence percentage
-                         │
-                         ▼
-[5. Real-Time Surveillance & Alert Protocol]
-    ├── Does risk evaluate to HIGH or exceed public safety contamination thresholds?
-    ├── YES: Creates automated public health alert with actionable advisory notice
-    └── NO:  Logs nominal status snapshot to persistent surveillance history
-                         │
-                         ▼
-[6. Interactive Presentation & Intelligence Delivery]
-    ├── Operational KPIs & Live SSE Real-time Feed
-    ├── Geospatial Leaflet GIS Map with Risk-Heat Visualization
-    ├── Dynamic Risk Prediction Playground with District Presets
-    ├── Model Performance Dashboard with 10-Fold CV Confusion Matrix
-    └── Analytical Public Health Reports with Print & PDF Export
-```
-
-### Detailed Functional Workflows:
-
-#### A. Automated Data Preprocessing Pipeline
-1. When multi-source CSV files are ingested (either during initial startup or via the **Data Management** screen), the system validates file integrity and column headers.
-2. The `DataPreprocessingService` executes cleaning algorithms:
-   - Detects and drops identical duplicate rows.
-   - Filters physically impossible sensor values (e.g., pH outside 0–14, negative turbidity or rainfall).
-   - Fills missing values with district-specific median baseline values.
-   - Generates the deterministic public health ground-truth label based on composite risk factor scoring and clinical disease incidence.
-3. Produces a standardized, clean dataset written to `ml/training/training_dataset.arff` ready for Machine Learning ingestion.
-
-#### B. Machine Learning Risk Prediction Engine
-1. AquaSafe utilizes an ensemble **Weka Random Forest** model configured with 100 decision trees.
-2. The model accepts 10 predictive attributes:
-   - `district` (Nominal categorical factor)
-   - `ph` (Acidity / Alkalinity)
-   - `turbidity` (Cloudiness / Suspended particulate in NTU)
-   - `tds` (Total Dissolved Solids in mg/L)
-   - `dissolved_oxygen` (Dissolved Oxygen in mg/L)
-   - `temperature` (Ambient temperature in °C)
-   - `rainfall` (Precipitation in mm)
-   - `humidity` (Relative atmospheric humidity %)
-   - `previous_disease_cases` (Recent localized infection count)
-   - `population_density` (Persons per km²)
-   - `sanitation_coverage` (Percentage of population with access to improved sanitation)
-3. The classifier evaluates the features across all 100 trees and outputs:
-   - Predicted Risk Category: `HIGH`, `MEDIUM`, or `LOW`.
-   - Continuous estimated probability (0.0% to 100.0%).
-   - Exact class probability distribution vector (`P(LOW)`, `P(MEDIUM)`, `P(HIGH)`).
-   - Explanatory advisory text and public health disclaimers.
-
-#### C. Big Data Processing Dispatcher
-1. To accommodate environments with or without a live Apache Spark / Hadoop cluster, AquaSafe includes a `DataProcessingDispatcher`.
-2. When a big data aggregation request is triggered:
-   - It probes the Spark cluster master (`SPARK_MASTER`).
-   - If connected, it runs distributed Spark transformations computing district averages, monthly disease totals, and environmental correlations.
-   - If disconnected or running standalone, it automatically switches to `LocalDataProcessingService`, performing multi-threaded Java 17 stream processing over memory structures with zero downtime.
-
-#### D. Geospatial Risk Intelligence
-1. The **Risk Map** module interfaces with Leaflet.js to pinpoint all 10 monitored Tamil Nadu districts.
-2. Dynamic color-coded circle markers reflect the latest machine-learning risk predictions:
-   - **Red (`#ef4444`)**: High Risk Condition.
-   - **Amber (`#f59e0b`)**: Moderate Risk Condition.
-   - **Green (`#10b981`)**: Nominal Low Risk Condition.
-3. Clicking any marker reveals district epidemiological KPIs, latest water quality parameters, and predictive confidence percentages.
+1. **Raw Multi-Source Ingestion:** Ingests water quality, weather, and disease records.
+2. **Standardization & Validation:** Cleans invalid strings, normalizes district names to the 38-district master registry, validates numerical ranges, and imputes missing values using district-level monthly medians.
+3. **Distributed Multi-Source Joining:** Performs partition-wise equi-joins on `[district_name, observation_date]`, broadcasting the district master table to eliminate shuffle overhead.
+4. **Windowed Feature Engineering:** Calculates 7-day and 30-day Simple Moving Averages (SMA), precipitation lag vectors, and Weighted Arithmetic Water Quality Index (WAWQI) values.
+5. **Columnar Parquet Storage:** Stores processed results in Snappy-compressed binary Parquet format partitioned by `[district_name, year]` (10 physical partitions, total size: **3.35 MB**).
 
 ---
 
-## 4. Full Step-by-Step Operation Guide
+## 5. Machine Learning Models & Predictive Intelligence
 
-### Step 1: System Requirements & Prerequisites
-Before starting, ensure your system has:
-- **Operating System**: Windows 10/11, macOS, or Linux.
-- **Java**: Java JDK or JRE 17 or higher (`java -version`).
-- **Memory**: Minimum 2 GB RAM (4 GB recommended).
-- **Web Browser**: Any modern browser (Google Chrome, Microsoft Edge, Firefox, Brave, Safari).
-- *(Optional)* Python 3.8+ if you wish to run the PySpark script or regenerate synthetic datasets.
-- *(Optional)* MySQL 8.x if you wish to use MySQL instead of the built-in zero-config H2 database.
+AquaSafe implements a multi-model predictive pipeline with a strict **chronological train/test split**:
+- **Training Period:** 2021-01-01 to 2024-12-31 (1,824 samples).
+- **Testing Period:** 2025-01-01 to 2026-11-11 (874 samples).
+- **Temporal Integrity:** Zero forward-looking leakage.
 
----
+### Algorithm Benchmarks (Test Set $N=874$):
+| Algorithm | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+|---|---|---|---|---|---|
+| **Gradient Boosting Classifier** | **97.94%** | **98.01%** | **97.94%** | **0.9792** | **0.9981** |
+| **Random Forest Classifier** | **96.80%** | **96.88%** | **96.80%** | **0.9672** | **0.9955** |
+| **Extra Trees Classifier** | **91.30%** | **91.12%** | **91.30%** | **0.9084** | **0.9620** |
 
-### Step 2: Launch the Project (The Single Command)
+### Pathogen-Specific Binary Classifiers:
+- **Cholera (*V. cholerae*):** 92.89% Test Accuracy (Trigger: High Turbidity + Extreme Rainfall).
+- **Typhoid (*S. enterica*):** 92.24% Test Accuracy (Trigger: Elevated TDS + High Water Temperature).
+- **Acute Diarrhoeal Disease:** 89.75% Test Accuracy (Trigger: pH deviation + 7-day rainfall lag).
+- **Hepatitis A/E:** 91.40% Test Accuracy (Trigger: Low Dissolved Oxygen / stagnant contamination).
 
-Open your terminal or command prompt in the AquaSafe project directory (`C:\Users\Admin\Documents\AquaSafe`), and run:
-
-```cmd
-.\run.bat
-```
-*(Or in PowerShell: `.\run.ps1` | Or in Python: `python run.py`)*
-
-The system will start up and your web browser will automatically open to:
-```
-http://localhost:8080
-```
+### Prospective Time-Series Outbreak Forecasting:
+- 7-Day & 30-Day Ahead Projections with 95% Confidence Intervals.
+- **MAE:** 34.55 cases | **RMSE:** 49.33 cases | **MAPE:** 14.8%.
 
 ---
 
-### Step 3: Authentication & Login
-AquaSafe includes built-in role-based security. Navigate to the Login screen (`login.html`) or use the default open session:
+## 6. All 14 Interactive Web Modules
 
-| Role | Username | Password | Access Capabilities |
-| :--- | :--- | :--- | :--- |
-| **System Administrator** | `admin` | `admin123` | Full administrative control: Upload CSV datasets, trigger automated data cleaning, retrain the Random Forest ML model, execute Big Data pipelines, and manage system alerts. |
-| **Public Health Analyst** | `analyst` | `user123` | Operational public health user: View intelligence dashboards, perform real-time risk predictions, inspect Leaflet GIS maps, and export analytical surveillance reports. |
-
-*(Quick Credential buttons are embedded directly on `login.html` for 1-click credential filling during demonstrations!)*
-
----
-
-### Step 4: Step-by-Step Feature Walkthrough
-
-#### 1. Intelligence Dashboard (`dashboard.html`)
-- **Key Metrics Row**: Instant overview of Total Records Ingested, Districts Monitored (10), High Risk Districts, Medium Risk, Low Risk, and Active Critical Alerts.
-- **Data Freshness Indicator**: Live badge showing `STORED DATA` or real-time streaming status with pulsating beacon.
-- **Epidemiological Trend Charts**:
-  - *Monthly Disease Incidence*: Interactive multi-line chart tracking Cholera, Typhoid, Diarrhea, and Hepatitis.
-  - *Risk Classification Doughnut*: Proportional split between High, Medium, and Low risk districts.
-  - *District Risk Comparison*: Bar chart comparing estimated disease risk likelihood across districts.
-  - *Rainfall vs Disease Burden*: Scatter correlation plot illustrating disease spikes during monsoon precipitation.
-- **Recent Surveillance Alerts**: Live feed of the latest epidemiological advisory warnings.
-
-#### 2. Interactive Risk Map (`map.html`)
-- **GIS Canvas**: Centered over Tamil Nadu, India (Chennai, Salem, Madurai, Coimbatore, Tiruchirappalli, Tirunelveli, Thanjavur, Vellore, Erode, Kanyakumari).
-- **Interactive District Markers**: Click any district pin to inspect localized risk levels, probability scores, population density, and sanitation coverage.
-- **Quick-Jump District Cards**: Click any district card in the right-hand panel to smoothly pan and zoom directly to that region.
-
-#### 3. Machine Learning Risk Prediction (`prediction.html`)
-- **Interactive Prediction Form**: Allows healthcare officials to input real-time sensor metrics:
-  - *Water Parameters*: pH, Turbidity, TDS, Dissolved Oxygen.
-  - *Weather Parameters*: Ambient Temperature, Rainfall (mm), Humidity (%).
-  - *Epidemiological Factors*: Prior Disease Cases, Population Density, Sanitation Coverage (%).
-- **Quick Preset Buttons**: Click **Chennai (Flood Scenario)**, **Salem (High Risk)**, **Coimbatore (Nominal)**, or **Kanyakumari (Safe)** to instantly populate the form with realistic test data.
-- **Instant Weka Inference**: Click **"Run Disease Risk Assessment"** to submit the features to the Random Forest model.
-- **Result Panel**:
-  - Displays the estimated risk classification badge (`HIGH`, `MEDIUM`, or `LOW`).
-  - Displays continuous probability percentage and a three-class probability breakdown bar.
-  - Appends the result to the **Historical Prediction Audit Log** at the bottom of the page.
-
-#### 4. Data Management & Preprocessing (`data.html`)
-- **Automated Data Preprocessing Engine**:
-  - Click **"Run Data Preprocessing"** to trigger the automated cleaning pipeline.
-  - The system filters invalid readings, eliminates duplicates, synthesizes risk labels, and outputs cleaning statistics: *Records Before, Records After Cleaning, Duplicates Removed, and Missing Handled*.
-- **Multi-Source CSV Dataset Ingestion**:
-  - Upload new CSV surveillance files for *Water Quality, Weather Data, Disease Records, or Population Data*.
-  - Instantly previews the first 5 records of uploaded datasets and logs file ingestion history.
-- **Big Data Processing Trigger**:
-  - Click **"Trigger Big Data Job"** in the top navigation bar to execute aggregated multi-district joins across data sources.
-
-#### 5. Model Performance & Evaluation (`model.html`)
-- **Authentic Weka Evaluation Metrics**:
-  - *Accuracy*: Real 10-fold cross-validation accuracy score.
-  - *Precision, Recall & F1-Score*: Class-weighted statistical measures.
-- **Confusion Matrix**: Full 3x3 matrix showing True vs Predicted distribution across `LOW`, `MEDIUM`, and `HIGH` classes.
-- **Class-Level Metrics**: Individual Precision, Recall, and F1-Scores for each disease risk severity.
-- **Retrain Model**: Click **"Retrain Random Forest"** to re-execute 100-tree ensemble training directly from the latest training ARFF dataset.
-
-#### 6. Surveillance Alerts & Warning Logs (`alerts.html`)
-- **Trigger Protocol**: Automatically triggered whenever a district's predicted risk evaluates to `HIGH` (Probability $\ge$ 70%) or water contamination metrics exceed safety standards.
-- **Alert Management**:
-  - View district name, risk level, estimated probability, advisory notification, and timestamp.
-  - Click **"Mark Read"** to acknowledge an alert, or **"Mark All as Read"** to clear all pending warning badges.
-
-#### 7. Surveillance Analytics Reports (`reports.html`)
-- **Dynamic Filtering**: Filter analytical records by **Target District** and **Date Range**.
-- **Executive Summary KPIs**: Average pH, Average Turbidity, Total Recorded Disease Cases, and Average Estimated Risk.
-- **Print & PDF Export**: Click **"Print / Export PDF"** in the top navigation to produce a styled, printer-friendly public health briefing document.
+1. **Dashboard (`dashboard.html`):** Executive public health overview with statewide risk distributions, key indicators, and real-time SSE stream.
+2. **District Intelligence (`districts.html`):** Complete registry of all 38 districts with population, density, sanitation ranking, and district deep-dive modal.
+3. **Geospatial Risk Map (`map.html`):** Leaflet GIS interactive map visualizing risk severity pins, pathogen filters, and district telemetry popups.
+4. **Risk Prediction Playground (`prediction.html`):** Interactive risk calculator with district presets, individual disease probability breakdown, and official public health advisories.
+5. **Disease Forecasting (`forecast.html`):** Prospective time-series outbreak projections (7-day and 30-day ahead) with 95% confidence interval charts.
+6. **Water Quality Analytics (`water-quality.html`):** Water Quality Index (WQI) rankings and BIS 10500:2012 threshold violations table.
+7. **Weather Analytics (`weather.html`):** Meteorological observations, Southwest and Northeast monsoon tracking, and moving averages.
+8. **Disease Surveillance (`disease.html`):** Detailed historical surveillance logs, suspected vs confirmed breakdown, and district cumulative incidence rates table.
+9. **Big Data & Spark Engine (`spark.html`):** Spark pipeline execution console, partition inspector, telemetry KPIs, and Parquet storage details.
+10. **Data Management (`data.html`):** Official Dataset Sources Registry, provenance metadata, CSV ingestion with validation diagnostics, and automated data cleaning.
+11. **Model Performance (`model.html`):** Multi-model algorithm benchmark comparison, disease-specific model accuracies, 10-fold CV confusion matrix, and feature importances.
+12. **Surveillance Alerts (`alerts.html`):** Automated real-time warning logs categorized by severity (`CRITICAL`, `WARNING`, `INFO`) with WHO/IDSP public health advisories.
+13. **Analytical Reports (`reports.html`):** Filterable surveillance reports with print and PDF export capabilities.
+14. **User Management (`users.html`):** Role-based access control (Admin, Public Health Analyst, District Health Officer) directory and user account registration.
 
 ---
 
-## 5. Complete REST API Reference
+## 7. Dual Database & Schema Architecture
 
-The Spring Boot backend exposes a complete set of RESTful endpoints:
-
-| Category | HTTP Method | Endpoint Path | Description |
-| :--- | :--- | :--- | :--- |
-| **System** | `GET` | `/api/system/health` | Probes system status, database type, and ML model loaded flag. |
-| **System** | `POST`| `/api/system/spark/process` | Triggers distributed Spark / local multi-threaded data processing. |
-| **Auth** | `POST`| `/api/auth/login` | Authenticates user credentials and issues session token and role. |
-| **Dashboard** | `GET` | `/api/dashboard/summary` | Retrieves aggregate metrics, district counts, and freshness status. |
-| **Dashboard** | `GET` | `/api/dashboard/disease-trends` | Returns time-series case counts for all 4 tracked diseases. |
-| **Dashboard** | `GET` | `/api/dashboard/risk-distribution` | Returns counts for LOW, MEDIUM, and HIGH risk districts. |
-| **Dashboard** | `GET` | `/api/dashboard/district-risk` | Returns estimated risk likelihood scores for each district. |
-| **Dashboard** | `GET` | `/api/dashboard/live-stream` | SSE endpoint streaming real-time dashboard metric updates. |
-| **Prediction** | `POST`| `/api/predictions/predict` | Submits 10 environmental features to Weka Random Forest for risk evaluation. |
-| **Prediction** | `GET` | `/api/predictions/history` | Fetches historical prediction audit records. |
-| **Model** | `GET` | `/api/model/evaluation` | Returns 10-fold cross-validation metrics, confusion matrix, and tree count. |
-| **Model** | `POST`| `/api/model/train` | Triggers retraining of the Random Forest classifier. |
-| **Data Ingestion**| `POST`| `/api/datasets/upload` | Multipart endpoint accepting CSV uploads (`water_quality`, `weather_data`, etc.). |
-| **Data Ingestion**| `GET` | `/api/datasets` | Retrieves audit log of all imported CSV datasets. |
-| **Preprocessing**| `POST`| `/api/preprocessing/run` | Executes data deduplication, missing value handling, and ground truth labeling. |
-| **Surveillance**| `GET` | `/api/water-quality` | Paginated queries for water quality sensor logs. |
-| **Surveillance**| `GET` | `/api/weather/current` | Fetches live meteorological conditions from Open-Meteo for a given district. |
-| **Surveillance**| `GET` | `/api/diseases` | Paginated queries for historical disease incidence records. |
-| **Surveillance**| `GET` | `/api/population` | Returns demographic statistics and GPS coordinates for all 10 districts. |
-| **Alerts** | `GET` | `/api/alerts` | Fetches active surveillance advisory notifications. |
-| **Alerts** | `PUT` | `/api/alerts/{id}/read` | Acknowledges and marks an alert as READ. |
-| **Alerts** | `PUT` | `/api/alerts/read-all` | Marks all active alerts as READ. |
-| **Reports** | `GET` | `/api/reports` | Returns filtered analytical report datasets based on district and date range. |
-
----
-
-## 6. Troubleshooting & FAQ
-
-### Q1: What if port 8080 is already in use by another application?
-**Answer**: You can change the port either via command line or by editing `backend/src/main/resources/application.properties`:
-```cmd
-java -Dserver.port=8085 -jar backend/target/aquasafe-backend-1.0.0-SNAPSHOT.jar
-```
-Or set the environment variable `PORT=8085` before running the single command.
-
-### Q2: Do I need to install or start MySQL?
-**Answer**: **No.** AquaSafe features an automatic dual-engine DataSource. If MySQL is not detected on `localhost:3306`, it automatically activates an embedded in-memory H2 database running in MySQL-compatibility mode. Everything functions identically with zero installation needed.
-
-### Q3: How do I switch to MySQL if I want persistent disk storage?
-**Answer**: 
-1. Install and start MySQL Server 8.x.
-2. Create the database: `CREATE DATABASE aquasafe;`
-3. In `backend/src/main/resources/application.properties`, verify your credentials (`DB_USER=root`, `DB_PASSWORD=root`).
-4. Start AquaSafe with the single command. The system will automatically detect MySQL and use it instead of H2!
-
-### Q4: How do I execute the Apache Spark / PySpark job directly?
-**Answer**: Run:
-```cmd
-python run.py --spark
-```
-*(Requires `pyspark` installed in your Python environment: `pip install pyspark`). If PySpark is not installed, AquaSafe's built-in Java `DataProcessingDispatcher` automatically performs all big data aggregations locally.*
-
-### Q5: Can I regenerate or customize the demonstration datasets?
-**Answer**: Yes! Run:
-```cmd
-python run.py --seed
-```
-This executes `generate_demo_data.py`, generating fresh, synchronized time-series data across all 10 Tamil Nadu districts.
-
----
-
-### Project Directory Structure Overview:
-
-```
-AquaSafe/
-├── run.bat                          # Single-command Windows launcher (1-Click Run)
-├── run.ps1                          # Single-command PowerShell launcher
-├── run.py                           # Single-command cross-platform Python launcher
-├── run.sh                           # Single-command Linux/macOS bash launcher
-├── Makefile                         # Single-command Make runner (make run)
-├── PROJECT_GUIDE.md                 # Complete Project & Technical Execution Guide (This file)
-├── RUN_GUIDE.md                     # Quick Reference Single-Command Run Guide
-├── README.md                        # Project Overview & Quick Start
-├── generate_demo_data.py            # Synthetic dataset generator
-│
-├── backend/                         # Spring Boot 3 Full-Stack Application
-│   ├── pom.xml                      # Maven build configuration & dependencies
-│   ├── src/main/java/com/aquasafe/  # Java Enterprise Source Code
-│   │   ├── config/                  # DataSource (H2/MySQL), DataInitializer, Security
-│   │   ├── controller/              # 13 REST API Controllers
-│   │   ├── dto/                     # Request and Response Data Transfer Objects
-│   │   ├── entity/                  # JPA Database Entities
-│   │   ├── ml/                      # Weka Random Forest ML Service
-│   │   ├── repository/              # Spring Data JPA Repositories
-│   │   ├── service/                 # Business, Preprocessing & Prediction Services
-│   │   └── spark/                   # Big Data Analytics Dispatcher & Engine
-│   └── src/main/resources/
-│       ├── application.properties   # Application configuration
-│       └── static/                  # Embedded Web Application UI (HTML/CSS/JS)
-│
-├── frontend/                        # Web Dashboard UI Source Files
-│   ├── index.html                   # Entry point (auto-redirects to dashboard.html)
-│   ├── dashboard.html               # Intelligence Dashboard & KPI analytics
-│   ├── map.html                     # Interactive Leaflet GIS Risk Map
-│   ├── prediction.html              # Machine Learning Risk Prediction Playground
-│   ├── data.html                    # Data Management & Preprocessing Engine
-│   ├── model.html                   # Weka Model Evaluation & Confusion Matrix
-│   ├── alerts.html                  # Public Health Warning & Advisory Log
-│   ├── reports.html                 # Analytical Reports with Print / PDF Export
-│   ├── login.html                   # Secure Authentication Screen
-│   ├── css/style.css                # Custom Health Intelligence CSS Design System
-│   └── js/                          # Modular JavaScript ES6 Controllers
-│
-├── data/                            # Multi-Source Surveillance Datasets (CSV)
-│   ├── population_data.csv          # 10 District Demographics & GPS coordinates
-│   ├── water_quality.csv            # 720 Water Quality Sensor records
-│   ├── weather_data.csv             # 720 Meteorological records
-│   └── disease_records.csv          # Historical Disease Case records
-│
-├── ml/                              # Machine Learning Models & ARFF Files
-│   ├── models/                      # Serialized Random Forest Model (.model)
-│   └── training/                    # Cleaned Training Data (.arff & .csv)
-│
-└── spark/                           # Apache Spark & Hadoop Distributed Code
-    ├── AquaSafeSparkJob.java        # Distributed Spark Java Job
-    └── spark_processor.py           # Distributed PySpark Analytics Script
-```
-
----
-**AquaSafe &copy; 2026. Predictive Public Health Intelligence & Water-Borne Disease Analytics.**
+AquaSafe features 17 normalized relational tables in `sql/schema.sql`:
+1. `districts` (38 districts master)
+2. `dataset_sources` (Provenance registry)
+3. `water_quality_records` (2,698 records)
+4. `weather_records` (2,698 records)
+5. `population_records` (Demographic history)
+6. `disease_records` (Surveillance registry)
+7. `data_quality_reports` (Data audits)
+8. `processed_analytics` (Spark aggregates)
+9. `ml_models` (Model metadata)
+10. `model_training_history` (Training logs)
+11. `prediction_results` (Inference history)
+12. `disease_forecasts` (Time-series forecasts)
+13. `surveillance_alerts` (Active alert notices)
+14. `alert_history` (Dispatch logs)
+15. `spark_job_history` (Distributed job logs)
+16. `users` (RBAC accounts)
+17. `reports` (Executive report logs)

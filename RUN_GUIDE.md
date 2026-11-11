@@ -1,93 +1,95 @@
-# AquaSafe - Quick Run Guide (Single Command Execution)
+# AquaSafe: Quick Run Guide & Operational Manual
 
-This document provides the exact single commands to run the AquaSafe project, the summary of its technical stack, and immediate operational steps.
-
-For full architectural details, equations, and REST endpoint references, consult [PROJECT_GUIDE.md](PROJECT_GUIDE.md).
+This document provides the single commands to run the **AquaSafe** platform, descriptions of all 14 frontend modules, and operational guidelines.
 
 ---
 
 ## 🚀 1. The Single Command to Run the Project
 
-Run **ONE** of the following commands from the root `AquaSafe` directory:
+Run **ONE** of the following commands from the project root (`c:\Users\Admin\Documents\AquaSafe`):
 
-### For Windows:
-```cmd
-.\run.bat
+### Windows PowerShell (Recommended for Windows):
+```powershell
+.\run.ps1
 ```
-*(You can also simply double-click `run.bat` in Windows File Explorer, or run `.\run.ps1` in PowerShell)*
 
-### For Python (All Operating Systems):
+### Windows Command Prompt:
+```cmd
+run.bat
+```
+
+### Python Cross-Platform Launcher (Windows / Linux / macOS):
 ```bash
 python run.py
 ```
 
-### For Linux / macOS / Git Bash:
+### Linux / macOS:
 ```bash
+chmod +x run.sh
 ./run.sh
-```
-
-### For Make:
-```bash
-make run
 ```
 
 ---
 
 ## ⚡ What That Single Command Automatically Does
 
-You do **not** need to set up MySQL, configure Apache Tomcat, start a Python backend, or configure node servers. The single command automatically:
-
-1. **Checks Java Environment**: Validates that Java 17+ is installed.
-2. **Builds Backend Package**: Checks for `backend/target/aquasafe-backend-1.0.0-SNAPSHOT.jar`; if missing, automatically compiles and packages it.
-3. **Auto-Configures Database**: Attempts connection to MySQL on port 3306; if not running, seamlessly switches to embedded in-memory H2 in MySQL compatibility mode with zero configuration.
-4. **Seeds Surveillance Datasets**: Loads demographics, water quality time-series, meteorological data, and historical disease records.
-5. **Loads & Validates ML Model**: Loads the Weka Random Forest model (100 decision trees) and runs 10-fold cross-validation.
-6. **Starts Server**: Binds the application to `http://localhost:8080`.
-7. **Launches Default Browser**: Automatically opens `http://localhost:8080` once the server is healthy.
-
----
-
-## 🛠️ 2. Technical Stack Summary
-
-- **Backend**: Java 17 LTS, Spring Boot 3.2.5 (Web, Data JPA, Security, Validation, OpenCSV).
-- **Machine Learning**: Weka 3.8.6 (Random Forest with 100 Trees, 10-Fold Cross-Validation, serialized model format, feature scaling, 10 environmental & demographic inputs).
-- **Big Data Engine**: Apache Spark 3.x / PySpark with resilient fallback to high-throughput In-Memory Multi-threaded Streaming Dispatcher.
-- **Database**: Dual-engine architecture — Automatic In-Memory H2 in MySQL Compatibility Mode (zero installation needed) + MySQL 8.x Enterprise with HikariCP.
-- **Frontend**: HTML5, Modern CSS3 (Glassmorphism, custom design system, CSS Variables), Vanilla JS ES6+, Bootstrap 5.3, Chart.js 4, Leaflet.js (GIS spatial visualization), FontAwesome 6, Google Inter typography.
-- **External APIs**: Open-Meteo REST API (free, real-time meteorological conditions).
+The launcher executes the entire platform startup sequence:
+1. **Checks Java 17+ and Python 3.11 Runtime**: Validates compiler and execution environments.
+2. **Checks & Generates 5-Year Datasets (2021–2026)**: If missing, runs `scripts/generate_tamilnadu_dataset.py` generating 2,698 records per domain across all 38 districts of Tamil Nadu.
+3. **Checks & Executes Apache Spark Pipeline**: If missing, runs `spark/spark_processor.py` generating the Snappy-compressed columnar Parquet dataset (`3.35 MB`).
+4. **Checks & Trains Machine Learning Models**: If missing, runs `ml/ml_engine.py` evaluating Random Forest, Gradient Boosting, disease-specific models, and 7-day/30-day time-series forecasts.
+5. **Compiles & Packages Backend**: Checks for `aquasafe-backend-1.0.0-SNAPSHOT.jar`; if missing, automatically compiles with Maven.
+6. **Auto-Configures Dual Database**: Seamlessly switches to embedded H2 (MySQL mode) if MySQL 8.x is inactive on port 3306.
+7. **Binds to `http://localhost:8080` & Auto-Launches Browser**: Opens your default browser directly to the dashboard.
 
 ---
 
-## 🔑 3. Login Credentials
+## 🔑 2. Login Credentials
 
 | Username | Password | Role | Description |
-| :--- | :--- | :--- | :--- |
-| `admin` | `admin123` | **ADMIN** | Full administrative rights (Upload CSVs, Data Preprocessing, ML Retraining, Big Data trigger) |
-| `analyst` | `user123` | **USER** | Public Health Analyst (View Dashboard, ML Predictions, GIS Map, Export Reports) |
-
-*(Quick Credential buttons are available on `login.html` for 1-click filling)*
-
----
-
-## 📋 4. How It Works (Quick Overview)
-
-1. **Data Ingestion**: Multi-source surveillance datasets (water quality, weather, population density, historical disease cases) are loaded into the database.
-2. **Data Preprocessing**: Filters sensor anomalies, removes duplicate records, imputes missing values, and assigns deterministic ground-truth risk categories.
-3. **Machine Learning Prediction**: When new environmental readings are submitted, the Weka Random Forest classifier evaluates the 10 features and predicts the exact statistical probability and risk category: **HIGH**, **MEDIUM**, or **LOW**.
-4. **Geospatial Intelligence**: Leaflet.js plots the districts on an interactive map with risk-colored pins (Red for High, Amber for Medium, Green for Low).
-5. **Automated Alerting**: When high risk or contamination is detected, an automated public health warning is generated.
-6. **Reporting & PDF Export**: Analysts can filter historical metrics by district and date range and print / export official executive PDF summaries.
+|---|---|---|---|
+| `admin` | `admin123` | **ADMIN** | System Administrator (Full configuration, user mgmt, ML retrain, Spark trigger) |
+| `analyst` | `user123` | **PUBLIC_HEALTH_ANALYST** | Epidemiologist / Analyst (Surveillance, predictions, forecasts, reports) |
+| `dho_chennai` | `officer123` | **DISTRICT_HEALTH_OFFICER** | District Health Officer (Field monitoring, active alerts) |
 
 ---
 
-## 🌐 5. Key URLs
+## 🌐 3. All 14 Interactive Web Modules
 
-- **Dashboard**: `http://localhost:8080/dashboard.html`
-- **Interactive Risk Map**: `http://localhost:8080/map.html`
-- **Machine Learning Prediction**: `http://localhost:8080/prediction.html`
-- **Data Management & Cleaning**: `http://localhost:8080/data.html`
-- **Model Performance & CV**: `http://localhost:8080/model.html`
-- **Surveillance Alerts**: `http://localhost:8080/alerts.html`
-- **Analytical Reports**: `http://localhost:8080/reports.html`
-- **Login Screen**: `http://localhost:8080/login.html`
-- **System Health Endpoint**: `http://localhost:8080/api/system/health`
+| # | Module Name | URL | Primary Function |
+|---|---|---|---|
+| 1 | **Dashboard** | `http://localhost:8080/dashboard.html` | High-level KPIs, 38-district risk distribution, WQI trends |
+| 2 | **District Intelligence** | `http://localhost:8080/districts.html` | All 38 districts deep dive, population, area, sanitation ranking |
+| 3 | **Geospatial Risk Map** | `http://localhost:8080/map.html` | Leaflet GIS interactive map with disease filters & risk pins |
+| 4 | **Risk Prediction Engine** | `http://localhost:8080/prediction.html` | Real-time multi-indicator ML evaluation & disease risk scores |
+| 5 | **Disease Forecasting** | `http://localhost:8080/forecast.html` | 7-day & 30-day ahead outbreak projections with 95% CI |
+| 6 | **Water Quality Analytics**| `http://localhost:8080/water-quality.html` | BIS 10500:2012 standards, WAWQI scores, threshold violations |
+| 7 | **Weather Analytics** | `http://localhost:8080/weather.html` | IMD observations, Northeast/Southwest monsoon analysis, SMAs |
+| 8 | **Disease Surveillance** | `http://localhost:8080/disease.html` | Cholera, Typhoid, ADD, Hepatitis case logs & incidence rates |
+| 9 | **Big Data & Spark Engine**| `http://localhost:8080/spark.html` | Trigger PySpark job, view partitions, Parquet metrics, execution logs |
+| 10 | **Data Management** | `http://localhost:8080/data.html` | Provenance registry, CSV upload, data cleaning & deduplication |
+| 11 | **Model Performance** | `http://localhost:8080/model.html` | Algorithm comparison, 10-fold CV, feature importance, confusion matrix |
+| 12 | **Surveillance Alerts** | `http://localhost:8080/alerts.html` | Real-time critical outbreak alerts and public health advisories |
+| 13 | **Analytical Reports** | `http://localhost:8080/reports.html` | Printable executive summaries & PDF export |
+| 14 | **User Management** | `http://localhost:8080/users.html` | Role-based account creation, authorization, and audit logs |
+
+---
+
+## 🔧 4. Command-Line Options for `run.py`
+
+```bash
+# Standard 1-command startup:
+python run.py
+
+# Recompile Maven package and run:
+python run.py --build
+
+# Run Apache Spark PySpark 4.2.0 ETL & Parquet generation:
+python run.py --spark
+
+# Run Scikit-Learn training, benchmarking & time-series forecasting:
+python run.py --ml
+
+# Regenerate 5-year multi-source raw datasets for all 38 districts:
+python run.py --data
+```

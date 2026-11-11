@@ -15,7 +15,7 @@ const api = {
 
     getUser() {
         const user = localStorage.getItem('aquasafe_user');
-        return user ? JSON.parse(user) : { username: 'Analyst', role: 'USER' };
+        return user ? JSON.parse(user) : { username: 'analyst', role: 'USER' };
     },
 
     setUser(userData) {
@@ -94,13 +94,34 @@ const api = {
         return this.request('/dashboard/district-risk');
     },
 
-    // 2. Water Quality
+    // 2. Districts Master (All 38 Districts)
+    async getDistricts() {
+        return this.request('/districts');
+    },
+
+    async getDistrictByName(name) {
+        return this.request(`/districts/${encodeURIComponent(name)}`);
+    },
+
+    async getDistrictsSummary() {
+        return this.request('/districts/summary');
+    },
+
+    // 3. Water Quality Analytics
     async getWaterQuality(district = '', page = 0, size = 15) {
         const query = `?district=${encodeURIComponent(district)}&page=${page}&size=${size}`;
         return this.request(`/water-quality${query}`);
     },
 
-    // 3. Weather Data
+    async getWaterQualityAnalytics() {
+        return this.request('/water-quality/analytics');
+    },
+
+    async getWaterQualityViolations() {
+        return this.request('/water-quality/violations');
+    },
+
+    // 4. Weather Data Analytics
     async getCurrentWeather(district = 'Chennai') {
         return this.request(`/weather/current?district=${encodeURIComponent(district)}`);
     },
@@ -114,18 +135,44 @@ const api = {
         return this.request(`/weather${query}`);
     },
 
-    // 4. Disease Surveillance
+    async getWeatherAnalytics() {
+        return this.request('/weather/analytics');
+    },
+
+    async getMonsoonAnalysis() {
+        return this.request('/weather/monsoon');
+    },
+
+    // 5. Disease Surveillance
     async getDiseases(district = '', page = 0, size = 15) {
         const query = `?district=${encodeURIComponent(district)}&page=${page}&size=${size}`;
         return this.request(`/diseases${query}`);
     },
 
-    // 5. Population & Geo
+    async getDiseaseAnalytics() {
+        return this.request('/diseases/analytics');
+    },
+
+    async getDistrictIncidence() {
+        return this.request('/diseases/incidence');
+    },
+
+    // 6. Disease Forecasting
+    async getForecasts(district = '') {
+        const query = district ? `?district=${encodeURIComponent(district)}` : '';
+        return this.request(`/forecasts${query}`);
+    },
+
+    async getForecastMetrics() {
+        return this.request('/forecasts/metrics');
+    },
+
+    // 7. Population & Geo
     async getPopulation() {
         return this.request('/population');
     },
 
-    // 6. Datasets & Upload
+    // 8. Datasets, Sources & Upload
     async uploadDataset(formData) {
         const url = `${API_BASE}/datasets/upload`;
         const resp = await fetch(url, {
@@ -143,12 +190,20 @@ const api = {
         return this.request('/datasets');
     },
 
-    // 7. Preprocessing
+    async getDatasetSources() {
+        return this.request('/datasets/sources');
+    },
+
+    async getDataQualityReports() {
+        return this.request('/datasets/quality');
+    },
+
+    // 9. Preprocessing
     async runPreprocessing() {
         return this.request('/preprocessing/run', { method: 'POST' });
     },
 
-    // 8. ML Model Management
+    // 10. ML Model Management
     async trainModel() {
         return this.request('/model/train', { method: 'POST' });
     },
@@ -157,7 +212,11 @@ const api = {
         return this.request('/model/evaluation');
     },
 
-    // 9. Prediction Engine
+    async getModelComparison() {
+        return this.request('/model/comparison');
+    },
+
+    // 11. Prediction Engine
     async predictRisk(params) {
         return this.request('/predictions/predict', {
             method: 'POST',
@@ -169,7 +228,7 @@ const api = {
         return this.request('/predictions/history');
     },
 
-    // 10. Alerts
+    // 12. Alerts
     async getAlerts() {
         return this.request('/alerts');
     },
@@ -178,7 +237,11 @@ const api = {
         return this.request(`/alerts/${id}/read`, { method: 'PUT' });
     },
 
-    // 11. Reports
+    async markAllAlertsRead() {
+        return this.request('/alerts/read-all', { method: 'PUT' });
+    },
+
+    // 13. Reports
     async getReports(district = '', startDate = '', endDate = '') {
         let query = '?';
         if (district) query += `district=${encodeURIComponent(district)}&`;
@@ -187,7 +250,7 @@ const api = {
         return this.request(`/reports${query}`);
     },
 
-    // 12. System & Big Data Processing
+    // 14. System & Big Data Processing
     async getSystemHealth() {
         return this.request('/system/health');
     },
@@ -196,7 +259,50 @@ const api = {
         return this.request('/system/spark/process', { method: 'POST' });
     },
 
-    // 13. Auth
+    async getSparkHistory() {
+        return this.request('/system/spark/history');
+    },
+
+    async getSparkReport() {
+        return this.request('/system/spark/report');
+    },
+
+    // 15. User Management
+    async getUsers() {
+        return this.request('/users');
+    },
+
+    async createUser(payload) {
+        return this.request('/users', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+    },
+
+    async deleteUser(id) {
+        return this.request(`/users/${id}`, {
+            method: 'DELETE'
+        });
+    },
+
+    async toggleUserStatus(id) {
+        return this.request(`/users/${id}/toggle-status`, {
+            method: 'PUT'
+        });
+    },
+
+    // 16. Live Data Synchronization
+    async triggerDataSync() {
+        return this.request('/system/sync', {
+            method: 'POST'
+        });
+    },
+
+    async getDataSyncStatus() {
+        return this.request('/system/sync-status');
+    },
+
+    // 17. Auth
     async login(username, password) {
         return this.request('/auth/login', {
             method: 'POST',
@@ -212,14 +318,14 @@ const api = {
             if (nameEl && user && user.username) {
                 nameEl.textContent = user.username.toLowerCase() === 'admin' 
                     ? 'System Administrator' 
-                    : (user.username.toLowerCase() === 'analyst' ? 'Public Health Analyst' : user.username);
+                    : (user.username.toLowerCase() === 'dho' ? 'District Health Officer' : 'Public Health Analyst');
             }
             const roleEl = document.getElementById('navUserRole');
             if (roleEl && user && user.role) {
                 roleEl.textContent = `${user.role.toUpperCase()} ROLE`;
             }
 
-            // Sync alert notification badge in navigation
+            // Sync alert badge
             this.getAlerts().then(alerts => {
                 if (!alerts) return;
                 const unreadCount = alerts.filter(a => a.status === 'UNREAD').length;
@@ -242,8 +348,6 @@ const api = {
 
 window.api = api;
 
-// Automatically bind session indicators on every page
 document.addEventListener('DOMContentLoaded', () => {
     api.initAuthUI();
 });
-

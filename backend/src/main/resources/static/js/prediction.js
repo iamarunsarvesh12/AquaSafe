@@ -1,41 +1,75 @@
 /**
  * AquaSafe Machine Learning Prediction Controller
- * Submits environmental/sanitary features to Weka Random Forest model
+ * Submits environmental/sanitary features to Weka & Python models
+ * Supports all 38 Tamil Nadu districts and disease-specific risks
  */
 
 const DISTRICT_PRESETS = {
     'Chennai': {
         ph: 6.8, turbidity: 7.2, tds: 380, dissolvedOxygen: 5.2,
         temperature: 29.5, rainfall: 85.0, humidity: 82.0,
-        previousDiseaseCases: 28, populationDensity: 26900, sanitationCoverage: 92.5
+        previousDiseaseCases: 28, populationDensity: 26900, sanitationCoverage: 94.6
     },
     'Salem': {
         ph: 6.2, turbidity: 9.4, tds: 440, dissolvedOxygen: 4.3,
         temperature: 30.1, rainfall: 72.0, humidity: 76.0,
-        previousDiseaseCases: 34, populationDensity: 665, sanitationCoverage: 75.5
+        previousDiseaseCases: 34, populationDensity: 665, sanitationCoverage: 76.8
     },
     'Coimbatore': {
         ph: 7.3, turbidity: 2.1, tds: 220, dissolvedOxygen: 7.1,
         temperature: 26.5, rainfall: 12.0, humidity: 62.0,
-        previousDiseaseCases: 4, populationDensity: 748, sanitationCoverage: 88.5
+        previousDiseaseCases: 4, populationDensity: 748, sanitationCoverage: 90.1
     },
     'Kanyakumari': {
         ph: 7.4, turbidity: 1.8, tds: 195, dissolvedOxygen: 7.8,
         temperature: 27.2, rainfall: 8.0, humidity: 65.0,
-        previousDiseaseCases: 2, populationDensity: 1119, sanitationCoverage: 91.0
+        previousDiseaseCases: 2, populationDensity: 1119, sanitationCoverage: 92.4
+    },
+    'Madurai': {
+        ph: 7.1, turbidity: 4.5, tds: 340, dissolvedOxygen: 6.2,
+        temperature: 31.0, rainfall: 35.0, humidity: 68.0,
+        previousDiseaseCases: 12, populationDensity: 820, sanitationCoverage: 82.5
+    },
+    'Tiruchirappalli': {
+        ph: 7.2, turbidity: 5.8, tds: 390, dissolvedOxygen: 5.6,
+        temperature: 30.5, rainfall: 42.0, humidity: 71.0,
+        previousDiseaseCases: 16, populationDensity: 602, sanitationCoverage: 80.6
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await populateDistrictDropdown();
     setupPredictionForm();
-    loadPredictionHistory();
+    await loadPredictionHistory();
 });
+
+async function populateDistrictDropdown() {
+    const select = document.getElementById('predDistrict');
+    if (!select) return;
+
+    try {
+        const districts = await api.getDistricts();
+        if (districts && districts.length > 0) {
+            select.innerHTML = '';
+            districts.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.districtName || d.district;
+                opt.textContent = `${d.districtName || d.district} (${d.districtCode || 'TN'})`;
+                select.appendChild(opt);
+            });
+            // Default to Chennai
+            select.value = 'Chennai';
+            applyPreset('Chennai');
+        }
+    } catch (e) {
+        console.debug('Districts dropdown notice:', e);
+    }
+}
 
 function setupPredictionForm() {
     const form = document.getElementById('predictionForm');
     const districtSelect = document.getElementById('predDistrict');
 
-    // Quick Preset buttons
     document.querySelectorAll('.preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const district = btn.getAttribute('data-district');
@@ -63,7 +97,9 @@ function applyPreset(district) {
     const data = DISTRICT_PRESETS[district];
     if (!data) return;
 
-    document.getElementById('predDistrict').value = district;
+    const distEl = document.getElementById('predDistrict');
+    if (distEl) distEl.value = district;
+
     document.getElementById('predPh').value = data.ph;
     document.getElementById('predTurbidity').value = data.turbidity;
     document.getElementById('predTds').value = data.tds;
@@ -79,7 +115,6 @@ function applyPreset(district) {
 async function executePrediction() {
     const btn = document.getElementById('btnPredictRisk');
     const spinner = document.getElementById('predictSpinner');
-    const resultBox = document.getElementById('predictionResultContainer');
 
     const params = {
         district: document.getElementById('predDistrict').value,
@@ -119,35 +154,38 @@ function renderPredictionResult(res, params) {
 
     let riskClass = 'low';
     let riskBg = 'risk-low';
-    let badgeColor = 'bg-success';
     if (risk === 'HIGH') {
         riskClass = 'high';
         riskBg = 'risk-high';
-        badgeColor = 'bg-danger';
     } else if (risk === 'MEDIUM') {
         riskClass = 'medium';
         riskBg = 'risk-medium';
-        badgeColor = 'bg-warning text-dark';
     }
 
-    // Class probabilities
     const cp = res.classProbabilities || { LOW: 0, MEDIUM: 0, HIGH: 0 };
     const lowP = ((cp.LOW || 0) * 100).toFixed(1);
     const medP = ((cp.MEDIUM || 0) * 100).toFixed(1);
     const highP = ((cp.HIGH || 0) * 100).toFixed(1);
 
+    // Disease specific badges
+    const getBadge = (lvl) => {
+        if (lvl === 'HIGH') return '<span class="badge bg-danger">HIGH RISK</span>';
+        if (lvl === 'MEDIUM') return '<span class="badge bg-warning text-dark">MODERATE</span>';
+        return '<span class="badge bg-success">LOW RISK</span>';
+    };
+
     container.innerHTML = `
-        <div class="result-card ${riskBg} shadow-sm animate__animated animate__fadeIn">
-            <span class="text-uppercase fw-bold text-muted small letter-spacing-1">Estimated Risk Assessment</span>
+        <div class="result-card ${riskBg} shadow-sm animate__animated animate__fadeIn p-4 rounded-3 border">
+            <span class="text-uppercase fw-bold text-muted small letter-spacing-1">Machine Learning Risk Assessment</span>
             <div class="my-3">
                 <span class="risk-badge-large ${riskClass}">${risk} RISK</span>
             </div>
             
             <h3 class="fw-bold mb-2 text-dark">${probPercent}% Estimated Probability</h3>
-            <p class="text-secondary mb-4">${escapeHtml(res.message)}</p>
+            <p class="text-secondary mb-3">${escapeHtml(res.message)}</p>
 
             <!-- Probability breakdown bars -->
-            <div class="row g-2 mb-4 text-start">
+            <div class="row g-2 mb-3 text-start">
                 <div class="col-4">
                     <div class="small fw-semibold text-muted mb-1">LOW: ${lowP}%</div>
                     <div class="progress" style="height: 6px;">
@@ -168,22 +206,43 @@ function renderPredictionResult(res, params) {
                 </div>
             </div>
 
+            <!-- Disease-Specific Breakdown -->
+            <div class="bg-white p-3 rounded-3 text-start border mb-3">
+                <div class="fw-bold text-dark small mb-2"><i class="fa-solid fa-virus-covid me-1"></i> Disease-Specific Risk Estimates</div>
+                <div class="row g-2 text-center">
+                    <div class="col-3 border-end">
+                        <div class="small text-muted">Cholera</div>
+                        <div>${getBadge(res.predictedCholeraRisk || 'LOW')}</div>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="small text-muted">Typhoid</div>
+                        <div>${getBadge(res.predictedTyphoidRisk || 'LOW')}</div>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="small text-muted">Diarrhea</div>
+                        <div>${getBadge(res.predictedDiarrheaRisk || 'LOW')}</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="small text-muted">Hepatitis</div>
+                        <div>${getBadge(res.predictedHepatitisRisk || 'LOW')}</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Model & Input Snapshot Metadata -->
-            <div class="bg-white p-3 rounded-3 text-start small border">
+            <div class="bg-white p-3 rounded-3 text-start small border mb-3">
                 <div class="row g-2">
                     <div class="col-md-6"><strong>District:</strong> ${escapeHtml(res.district)}</div>
-                    <div class="col-md-6"><strong>Model Engine:</strong> ${escapeHtml(res.modelVersion)} (Weka Random Forest)</div>
+                    <div class="col-md-6"><strong>Model Engine:</strong> ${escapeHtml(res.modelVersion)}</div>
                     <div class="col-md-6"><strong>Timestamp:</strong> ${new Date(res.predictionDate).toLocaleString()}</div>
-                    <div class="col-md-6"><strong>Input Turbidity:</strong> ${params.turbidity} NTU | <strong>DO:</strong> ${params.dissolvedOxygen} mg/L</div>
+                    <div class="col-md-6"><strong>Input Parameters:</strong> Turb: ${params.turbidity} NTU | pH: ${params.ph} | DO: ${params.dissolvedOxygen} mg/L</div>
                 </div>
             </div>
 
             <!-- Disclaimer -->
-            <div class="disclaimer-box text-start">
-                <i class="fa-solid fa-circle-info text-primary mt-1"></i>
-                <div>
-                    <strong>Public Health Public Notice:</strong> ${escapeHtml(res.disclaimer)}
-                </div>
+            <div class="disclaimer-box text-start p-2 bg-light rounded text-muted small">
+                <i class="fa-solid fa-circle-info text-primary me-1"></i>
+                <strong>Public Notice:</strong> ${escapeHtml(res.disclaimer)}
             </div>
         </div>
     `;
